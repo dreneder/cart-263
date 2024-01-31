@@ -1,5 +1,5 @@
 class Animal {
-    constructor() {
+    constructor(x, y, image) {
         this.x = x;
         this.y = y;
         this.image = image;
@@ -10,15 +10,15 @@ class Animal {
 
 
     update() {
-        display();x``
+        this.display();
     }
     
     display() {
         push();
+        imageMode(CENTER);
         translate(this.x,this.y);
         rotate(this.angle)
-        imageMode(CENTER);
-        image
+        image(this.image, 0, 0);
         pop();
     }
 }

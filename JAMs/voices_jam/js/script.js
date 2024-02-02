@@ -6,7 +6,7 @@
 let currentAnimal = ``;
 let currentAnswer = ``;
 
-const speechSynthesizer = new p5.Speech();
+// const speechSynthesizer = new p5.Speech();
 const speechRecognizer = new p5.SpeechRec();
 
 function setup() {
@@ -52,13 +52,15 @@ function handleSpeechInput() {
     console.log(currentAnswer);
 }
 
-function reverseString(string) {
-    // Split the string into an array of characters
-    let characters = string.split(``);
-    // Reverse the array of characters
-    let reverseCharacters = characters.reverse();
-    // Join the array of characters back into a string
-    let result = reverseCharacters.join(``);
-    // Return the result
-    return result;
-  }
+
+// code for reversing carachters
+// function reverseString(string) {
+//     // Split the string into an array of characters
+//     let characters = string.split(``);
+//     // Reverse the array of characters
+//     let reverseCharacters = characters.reverse();
+//     // Join the array of characters back into a string
+//     let result = reverseCharacters.join(``);
+//     // Return the result
+//     return result;
+//   }

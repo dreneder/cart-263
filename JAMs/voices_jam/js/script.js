@@ -5,8 +5,16 @@
 
 let state = `home`;
 
-// let currentAnimal = ``;
-// let currentAnswer = ``;
+let category = [];
+let chosenCategory = [];
+
+let objects = [];
+let ppa = [];
+let movie = [];
+let allPlay = [];
+
+
+
 
 // const speechSynthesizer = new p5.Speech();
 const speechRecognizer = new p5.SpeechRec();
@@ -72,3 +80,18 @@ function draw() {
 //     currentAnswer = guessedAnimal;
 //     console.log(currentAnswer);
 // }
+
+function categoriesWheel() {
+    if (chosenCategory === `allPlay`) {
+        category = random(3);
+    }
+    else if (chosenCategory === `objects`) {
+        objects = random(3);
+    }
+    else if (chosenCategory === `ppa`) {
+        ppa = random(3);
+    }
+    else if (chosenCategory === `movie`) {
+        movie = random(3);
+    }
+}

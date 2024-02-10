@@ -77,24 +77,25 @@ function setup() {
     function draw() {
         background(255);
         
+        handleSpeechInput();
         
 
-        // //display the timer
-        // fill(0);
-        // textSize(50);
-        // text(timer,width/2,height-150);
+        //display the timer
+        fill(0);
+        textSize(50);
+        text(timer,width/2,height-150);
 
-        // //displays the video
-        // imageMode(CENTER);
-        // // image(videos[1],width/2,height/2,width/1.5,height/2);
-        // // pauses the video when it reaches the end
-        // if (videos[1].time() >= videos[1].duration()) {
-        //     videos[1].pause();
-        // }
+        //displays the video
+        imageMode(CENTER);
+        image(videos[1],width/2,height/2,width/1.5,height/2);
+        // pauses the video when it reaches the end
+        if (videos[1].time() >= videos[1].duration()) {
+            videos[1].pause();
+        }
 
         
     //display the title at the colour red or green according to the answer
-    if (rightCard = false) {
+    if (rightCard === true) {
         fill(0,255,0);
     }
     else {
@@ -129,9 +130,10 @@ function handleSpeechInput() {
         if (speechRecognizer.resultValue) {
         let lowerCaseResult = speechRecognizer.resultString.toLowerCase();
 
-        if (category.includes(lowerCaseResult)) {
+        if (lowerCaseResult.match("object")) {
             speechRecognizer.onResult;
             cardPicked = true;
+            rightCard = true;
         }
     // if (lowerCaseResult.includes(category[i])) {
     //     cardPicked = true;

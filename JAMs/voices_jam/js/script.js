@@ -119,7 +119,7 @@ function setup() {
     // home.displayCards();
 
     
-    console.log(cardPicked);
+    console.log(round(random(3,5)));
     
 
 
@@ -133,7 +133,7 @@ function handleSpeechInput() {
         if (lowerCaseResult.match("object")) {
             speechRecognizer.onResult;
             cardPicked = true;
-            rightCard = true;
+            
         }
     // if (lowerCaseResult.includes(category[i])) {
     //     cardPicked = true;

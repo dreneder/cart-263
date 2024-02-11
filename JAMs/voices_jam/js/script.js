@@ -24,7 +24,7 @@ let category = [`objet`,`person`,`place`,`animal`,`movie`,`all play`];
 
 let chosenCategory;
 
-let cardPicked = false;
+let cardDrawn = false;
 
 let rightCard = false;
 
@@ -34,7 +34,8 @@ let numVideos = 9;
 
 let cards = [`pinapple`,`lock`,`keyboard`,`italy`,`platypus`,`the rock`,`up`,`ocean's eleven`,`midnight in paris`];
 
-let timer = 60;
+let cardTimer = 63;
+let startTimer = 3;
 
 let video;
 
@@ -77,13 +78,25 @@ function setup() {
     function draw() {
         background(255);
         
+        // draw the states
+        if (state === `home`) {
+            home.displayTitle();
+            home.displayCards();
+            home.categoryWheel();
+        }
+        if (state === `card`) {
+            
+        }
+
+
+
         handleSpeechInput();
         
 
         //display the timer
         fill(0);
         textSize(50);
-        text(timer,width/2,height-150);
+        text(cardTimer,width/2,height-150);
 
         //displays the video
         imageMode(CENTER);
@@ -106,11 +119,11 @@ function setup() {
 
     //start the timer once a card is drawn
     if (state === `card` && frameCount % 60) {
-        timer--;
+        cardTimer--;
     }
     // returns to home if timer reaches 0
-    if (timer <= 0) {
-        timer = 0;
+    if (cardTimer <= 0) {
+        cardTimer = 0;
     }
 
 
@@ -119,40 +132,12 @@ function setup() {
     // home.displayCards();
 
     
-    console.log(round(random(3,5)));
+    
     
 
 
 
 }
 
-function handleSpeechInput() {
-        if (speechRecognizer.resultValue) {
-        let lowerCaseResult = speechRecognizer.resultString.toLowerCase();
-
-        if (lowerCaseResult.match("object")) {
-            speechRecognizer.onResult;
-            cardPicked = true;
-            
-        }
-    // if (lowerCaseResult.includes(category[i])) {
-    //     cardPicked = true;
-    // }
-    }
 
 
-}
-function categoriesWheel() {
-    if (chosenCategory === `allPlay`) {
-        category = random(3);
-    }
-    else if (chosenCategory === `objects`) {
-        objects = random(3);
-    }
-    else if (chosenCategory === `ppa`) {
-        ppa = random(3);
-    }
-    else if (chosenCategory === `movie`) {
-        movie = random(3);
-    }
-}

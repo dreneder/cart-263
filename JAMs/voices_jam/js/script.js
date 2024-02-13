@@ -19,6 +19,7 @@
 let state = `home`;
 
 let home;
+let card;
 
 let category = [`objet`,`person`,`place`,`animal`,`movie`,`all play`];
 
@@ -29,15 +30,20 @@ let cardDrawn = false;
 let rightCard = false;
 
 
-let videos = [];
-let numVideos = 9;
+let video = [];
 
-let cards = [`pinapple`,`lock`,`keyboard`,`italy`,`platypus`,`the rock`,`up`,`ocean's eleven`,`midnight in paris`];
+let cardNumber;
 
+let cards = [`pineapple`,`lock`,`keyboard`,`italy`,`platypus`,`the rock`,`up`,`ocean's eleven`,`midnight in paris`];
+
+// countdown timer variables
 let cardTimer = 63;
 let startTimer = 3;
+let resetTimer = 3;
+// variable to add 3 seconds at the end of the card timer
+let mappedTimer;
 
-let video;
+// let loadedVideo;
 
 
 const speechRecognizer = new p5.SpeechRec();
@@ -56,14 +62,14 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
 
     // loading videos
-    for (let i = 0; i < numVideos; i++) {
-        video = createVideo(`assets/videos/card_${i}.webm`);
-            videos.push(video);
-        video.hide();
-        video.play();
+    for (let i = 0; i < cards.length; i++) {
+        let loadedVideo = createVideo(`assets/videos/card_${i}.webm`,`assets/videos/card_${i}.mp4`);
+            video.push(loadedVideo);
+            loadedVideo.hide();
+            loadedVideo.play();
         }
+        // starts speech recording
         speechRecognizer.continuous = true;
-        // speechRecognizer.onResult = handleSpeechInput;
         speechRecognizer.start();
         
         // font to be used in the whole game
@@ -72,7 +78,9 @@ function setup() {
         textAlign(CENTER,CENTER);
         
         home = new Home();
-    }
+        card = new Card();
+
+}
     
     
     function draw() {
@@ -83,56 +91,18 @@ function setup() {
             home.displayTitle();
             home.displayCards();
             home.categoryWheel();
+            home.handleSpeechInput();
         }
-        if (state === `card`) {
-            
+        else if (state === `card`) {
+            card.displayInput();
+            card.displayVideo();
+            card.displayTimer();
+            card.handleSpeechInput();
         }
-
-
-
-        handleSpeechInput();
-        
-
-        //display the timer
-        fill(0);
-        textSize(50);
-        text(cardTimer,width/2,height-150);
-
-        //displays the video
-        imageMode(CENTER);
-        image(videos[1],width/2,height/2,width/1.5,height/2);
-        // pauses the video when it reaches the end
-        if (videos[1].time() >= videos[1].duration()) {
-            videos[1].pause();
-        }
-
-        
-    //display the title at the colour red or green according to the answer
-    if (rightCard === true) {
-        fill(0,255,0);
-    }
-    else {
-        fill(255,0,0);
-    }
-
-    text(speechRecognizer.resultString,width/2,150); // disply card title
-
-    //start the timer once a card is drawn
-    if (state === `card` && frameCount % 60) {
-        cardTimer--;
-    }
-    // returns to home if timer reaches 0
-    if (cardTimer <= 0) {
-        cardTimer = 0;
-    }
-
-
-
-    // home.displayTitle();
-    // home.displayCards();
-
+  
+        console.log(video[cardNumber]); 
     
-    
+
     
 
 

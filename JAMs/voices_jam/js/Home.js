@@ -10,10 +10,12 @@ class Home {
     }
 
     displayTitle() {
-        // displays the word "speech"
+        // displays the word "speech" and the instructions
         fill(0);
         textSize(50);
         text(`speech`,width/2,height/4-110);
+        textSize(30);
+        text(`say the category you would like to play`,width/2,height/4+150);
         
         // variable for the title
         let title = "PICTIONARY";
@@ -74,24 +76,27 @@ class Home {
         //
         if (cardDrawn === true) {
             if (chosenCategory === `allPlay`) {
-                cards = [random(8)];
+                cardNumber = round(random(8));
                 this.pilePickedColor.all = color(255,126,13);
             }
-            else if (chosenCategory === `objects`) {
-                cards = [random(0,2)];
+            else if (chosenCategory === `object`) {
+                cardNumber = round(random(0,2));
                 this.pilePickedColor.object = color(255,126,13);
             }
             else if (chosenCategory === `ppa`) {
-                cards = [random(3,5)];
+                cardNumber = round(random(3,5));
                 this.pilePickedColor.ppa = color(255,126,13);
             }
             else if (chosenCategory === `movie`) {
-                cards = [random(6,8)];
+                cardNumber = round(random(6,8));
                 this.pilePickedColor.movie = color(255,126,13);
             }
 
+            // sets the card according to the card number
+            cards[cardNumber];
+
             // shows the timer to start and countsdown
-            if (frameCount % 60) {
+            if (frameCount % 60 == 0) {
                 startTimer--
             }
             fill(0);
@@ -105,14 +110,22 @@ class Home {
                 // resets a few parameters used in card
                 cardTimer = 63;
                 rightCard = false;
+                video[cardNumber].time(0);
             }
+        }
+        else {
+            this.pilePickedColor.all = color(255,0,0);
+            this.pilePickedColor.object = color(255,0,0);
+            this.pilePickedColor.ppa = color(255,0,0);
+            this.pilePickedColor.movie = color(255,0,0);
         }
     }
 
-    handleSpeechInput() {
+    handleSpeechInput() { // method for audio capture
         if (speechRecognizer.resultValue) {
-            let lowerCaseResult = speechRecognizer.resultString.toLowerCase();
-        
+            let lowerCaseResult = speechRecognizer.resultString.toLowerCase(); // makes all the input lower case
+            
+            // if statement recognize the category chosen
             if (lowerCaseResult.match("object")) {
                 speechRecognizer.onResult;
                 cardDrawn = true;
@@ -135,10 +148,7 @@ class Home {
                 speechRecognizer.onResult;
                 cardDrawn = true;
                 chosenCategory = `allPlay`;
-            }
-          
+            } 
         }
-        
-        
-        }
+    }
 }

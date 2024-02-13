@@ -42,16 +42,18 @@ let startTimer = 3;
 // variable to add 3 seconds at the end of the card timer
 let mappedTimer;
 
-// let loadedVideo;
+let failSound;
+let cheer;
 
 
 const speechRecognizer = new p5.SpeechRec();
 
 /**
- * Loads all the videos
+ * Loads a few sounds
 */
 function preload() {
-   
+    cheer = loadSound(`assets/sounds/yay.wav`);
+    failSound = loadSound(`assets/sounds/wrong.wav`);
 }
 
 /**

@@ -11,7 +11,12 @@ class Card {
         else {
             fill(255,0,0);
             }
-        text(speechRecognizer.resultString,width/2,150); // display card title
+        if (rightCard === false && cardTimer > 3) { // display attempt or right title
+            text(speechRecognizer.resultString,width/2,150);
+        }
+        else { // display card title answer
+            text(cards[cardNumber],width/2,150);
+        }
     }
 
     displayVideo(){
@@ -28,9 +33,13 @@ class Card {
         // maps timer according to the answer
         if (rightCard === false) {
             mappedTimer = map(cardTimer,63,3,60,0,true); // maps to 60 seconds
+            if (cardTimer === 3) {
+                failSound.play(); // play a horn if it wasn't answered correctly
+            }
         }
         else if (rightCard === true && cardTimer >= 3) { // stops the mapped timer and goes to three seconds
             cardTimer = 3;
+            cheer.play(); // plays a cheer sound when the user is correct
         }
 
         //display the timer

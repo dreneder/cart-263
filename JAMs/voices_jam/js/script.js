@@ -39,7 +39,6 @@ let cards = [`pineapple`,`lock`,`keyboard`,`italy`,`platypus`,`the rock`,`up`,`o
 // countdown timer variables
 let cardTimer = 63;
 let startTimer = 3;
-let resetTimer = 3;
 // variable to add 3 seconds at the end of the card timer
 let mappedTimer;
 

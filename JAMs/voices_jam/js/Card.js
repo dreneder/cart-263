@@ -38,7 +38,7 @@ class Card {
             }
         }
         else if (rightCard === true && cardTimer >= 3) { // stops the mapped timer and goes to three seconds
-            cardTimer = 3;
+            cardTimer = 2.9;
             cheer.play(); // plays a cheer sound when the user is correct
         }
 
@@ -57,6 +57,7 @@ class Card {
             // resets a few parameters used in home
             startTimer = 3;
             cardDrawn = false;
+            speechRecognizer.resultString = ` `; // clears the string
         }
     }
 

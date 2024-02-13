@@ -111,6 +111,7 @@ class Home {
                 cardTimer = 63;
                 rightCard = false;
                 video[cardNumber].time(0);
+                speechRecognizer.resultString = ` `; // clears the string
             }
         }
         else {

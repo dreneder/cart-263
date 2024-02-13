@@ -15,13 +15,13 @@
 
 "use strict";
 
-
+//variable for states
 let state = `home`;
 
+// variables for classes
 let home;
 let card;
 
-let category = [`objet`,`person`,`place`,`animal`,`movie`,`all play`];
 
 let chosenCategory;
 
@@ -83,8 +83,10 @@ function setup() {
 
 }
     
-    
-    function draw() {
+/**
+ * Displays the states
+*/    
+function draw() {
         background(255);
         
         // draw the states

@@ -15,7 +15,9 @@ class Home {
         textSize(50);
         text(`speech`,width/2,height/4-110);
         textSize(30);
-        text(`say the category you would like to play`,width/2,height/4+110);
+        text(`say the category you would like to play`,width/2,height/4+60);
+        textSize(20);
+        text(`or say return to come back to this screen`,width/2,height/4+85);
         
         // variable for the title
         let title = "PICTIONARY";
@@ -101,7 +103,7 @@ class Home {
             }
             fill(0);
             textSize(50);
-            text(startTimer,width/2,height-150);
+            text(startTimer,width/2,height/2+110);
 
             // changes state when timer reaches 0
             if (startTimer <= 0) {
@@ -111,6 +113,7 @@ class Home {
                 cardTimer = 63;
                 rightCard = false;
                 video[cardNumber].time(0);
+                video[cardNumber].play();
                 speechRecognizer.resultString = ` `; // clears the string
             }
         }
@@ -125,7 +128,7 @@ class Home {
     handleSpeechInput() { // method for audio capture
         if (speechRecognizer.resultValue) {
             let lowerCaseResult = speechRecognizer.resultString.toLowerCase(); // makes all the input lower case
-            
+
             // if statement recognize the category chosen
             if (lowerCaseResult.match("object")) {
                 speechRecognizer.onResult;

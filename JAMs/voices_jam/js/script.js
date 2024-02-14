@@ -10,13 +10,14 @@
  * trimmed, and exported in webm format. The createVideo function is used to display it.
  * The user has one minute to guess the drawing, the videos finish with between 30 and 40 seconds.
  * The code for the title colors was based on this thread answer by Rabbid76: https://stackoverflow.com/questions/52614829/p5-js-change-text-color-in-for-a-single-word-in-a-sentence
+ * The code for the confetti was addapted from slow_izzm's code: https://editor.p5js.org/slow_izzm/sketches/H1fhGJSaX
  * 
  */
 
 "use strict";
 
 //variable for states
-let state = `home`;
+let state = `start`;
 
 // variables for classes
 let home;
@@ -73,10 +74,9 @@ function setup() {
 
     // loading videos
     for (let i = 0; i < cards.length; i++) {
-        let loadedVideo = createVideo(`assets/videos/card_${i}.webm`,`assets/videos/card_${i}.mp4`);
+        let loadedVideo = createVideo(`assets/videos/card_${i}.webm`);
             video.push(loadedVideo);
             loadedVideo.hide();
-            loadedVideo.play();
         }
     
         // starts speech recording
@@ -91,7 +91,8 @@ function setup() {
     // declaring the classes to used in draw
     home = new Home();
     card = new Card();
-
+    
+    //sets the confetti to be used if win
     confettiColor = [color(0,174,239), color(236,0,140), color(114,200,182)];
     for (let i = 0; i < 100; i++) {
         confetti[i] = new Confetti(random(0, width), random(-height, 0), random(-1, 1));
@@ -105,7 +106,13 @@ function draw() {
     background(255);
     
     // draw the states
-    if (state === `home`) {
+    if (state === `start`) {
+        // displays the word "speech" and the instructions
+        fill(0);
+        textSize(80);
+        text(`press SPACE to begin`,width/2,height/2);
+    }
+    else if (state === `home`) {
         home.displayTitle();
         home.displayCards();
         home.categoryWheel();
@@ -119,12 +126,21 @@ function draw() {
     }    
 
     // confetti drops if win, yay!
-    if (rightCard === true) {
+    if (rightCard === true && state === `card`) {
         for (let i = 0; i < confetti.length; i++) {
             confetti[i].displayConfetti();
+            if (confetti[i] >= height*1.5) {
+                confetti[i].splice;
+            }
         }
     }
 }
 
+function keyPressed() {
+    if (keyCode === 32 && state === `start`) {
+        state = `home`;
 
-
+            // plays the video again after a user interaction
+            video[0,1,2,3,4,5,6,7,8].play();
+    }
+}

@@ -1,7 +1,4 @@
 class Card {
-    constructor() {
-
-    }
 
     displayInput() {
         // display the title at the colour red or green according to the answer
@@ -70,6 +67,15 @@ class Card {
                 speechRecognizer.onResult;
                 rightCard = true;
             }
+            else if (lowerCaseResult.match("go back") ||
+            lowerCaseResult.match("return")) {
+            speechRecognizer.onResult;
+            // resets a few parameters used in home
+            startTimer = 3;
+            cardDrawn = false;
+            speechRecognizer.resultString = ` `; // clears the string
+            state = `home`;// returns to home
+            } 
             else {
                 speechRecognizer.onResult;
             }

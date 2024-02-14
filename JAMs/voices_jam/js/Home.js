@@ -15,7 +15,7 @@ class Home {
         textSize(50);
         text(`speech`,width/2,height/4-110);
         textSize(30);
-        text(`say the category you would like to play`,width/2,height/4+150);
+        text(`say the category you would like to play`,width/2,height/4+110);
         
         // variable for the title
         let title = "PICTIONARY";

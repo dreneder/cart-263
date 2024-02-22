@@ -13,7 +13,7 @@ class Drawing{
         fill(255);
         stroke(0);
         strokeWeight(3);
-        rect(0,0,this.width,this.height);
+        // rect(0,0,this.width,this.height);
         pop();
     }
 
@@ -24,7 +24,7 @@ class Drawing{
         fill(255);
         stroke(0);
         strokeWeight(3);
-        rect(0,0,this.width,this.height);
+        rect(0,0+this.height,100,100);
         pop();
     }
 }

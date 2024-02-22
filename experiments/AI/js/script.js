@@ -19,7 +19,7 @@ let drawing;
 
 */
 function setup() {
-  createCanvas(windowsWidth, windowsHewight);
+  createCanvas(windowWidth, windowHeight);
   // canvas = createCanvas(500, 500);
   // clearButton = createButton(`clear`);
   // clearButton.mousePressed(clearCanvas);

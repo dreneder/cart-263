@@ -29,6 +29,15 @@ function setup() {
   // resultsDiv = createDiv('model loading');
 
   drawing = new Drawing(width/2,height/2);
+
+      // font to be used in the whole game
+      textFont("Comic Sans MS"); // I know, yes, comic sans :)
+      // all text will be aligned to center
+      textAlign(CENTER,CENTER);
+      canvas.mousePressed(startPath);
+    canvas.mouseReleased(function() {
+    endPath();
+  });
 }
 
 function modelReady() {

@@ -1,16 +1,18 @@
 /**
- * Speech Pictionary
+ * Speech PictionAIry
  * André Neder
  * 
- * The Speech Pictionary is my attempt to replicate the game Pictionary with P5 and P5 Speech.
- * The whole game is divided in two states: home and card. When the user is in "home" the speech recognizer allows
- * for a category to be chosen. There are three categories: Object, Person/Place/Animal and Movie, and an All Play
- * category that picks a random card from all the other three.
- * My approach to make the drawings was to draw them with a pen on an iPad and record it. The video is them cropped
- * trimmed, and exported in webm format. The createVideo function is used to display it.
- * The user has one minute to guess the drawing, the videos finish with between 30 and 40 seconds.
+ * The Speech PictionAIry is the first time I do a sequel to another program for CART, it follows the game Speech Pictionary that used P5 Speech.
+ * The game expands from the previous one and is divided in four states: home, draw, guess and card.
+ * When the user is in "home" the user can choose whether to draw or guess a card, or random.
+ * When in "guess", the user has to choose a category: Object, Person/Place/Animal, Movie, and All Play (random from the other three).
+ * Like in the previous game "card" is used as a state for guessing the card.
+ * In the "draw" state, the user is given a random card from a random category to draw. The timer works the same for the computer as for the user guessing.
+ * If the the user guesses the right drawing, it's a win because it's a good guess. If the computer guesses the drawing, it's also a win because it was a
+ * nice drawing, so it's a win-win lose-lose game :).
  * The code for the title colors was based on this thread answer by Rabbid76: https://stackoverflow.com/questions/52614829/p5-js-change-text-color-in-for-a-single-word-in-a-sentence
  * The code for the confetti was addapted from slow_izzm's code: https://editor.p5js.org/slow_izzm/sketches/H1fhGJSaX
+ * The code for the drawing was adapted from the sketch by Daniel Shiffman: https://editor.p5js.org/codingtrain/sketches/6LLnGY1VY
  * 
  */
 

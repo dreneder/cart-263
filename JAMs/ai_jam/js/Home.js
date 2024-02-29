@@ -2,157 +2,146 @@ class Home {
     constructor (){
         // color of piles
         this.pilePickedColor = {
-            object: color(255,0,0),
-            ppa: color(255,0,0),
-            movie: color(255,0,0),
-            all: color(255,0,0)
+            draw: color(0,0),
+            guess: color(20,0),
+            idk: color(20,0)
         };
+        this.onDraw = false;
+        this.onGuess = false;
+        this.onIDK  = false;
+        // to randomize an animation and choice
+        this.countRandom = 0;
+        this.countRandomPlus = 5;
+        this.countRandomPlusMax = 0;
+        this.randomPlay = undefined;
     }
 
     displayTitle() {
         // displays the word "speech" and the instructions
         fill(0);
-        textSize(50);
-        text(`speech`,width/2,height/4-110);
         textSize(30);
-        text(`say the category you would like to play`,width/2,height/4+60);
+        text(`choose what you want play`,width/2,height/2-height/7);
         textSize(20);
-        text(`or say return to come back to this screen`,width/2,height/4+85);
         
-        // variable for the title
-        let title = "PICTIONARY";
-      
-        // setting a colour for each letter of the title
-        let colors = [
-            color(163, 94, 73),
-            color(0, 255, 0),
-            color(69, 159, 255),
-            color(255, 255, 0),
-            color(255, 0, 255),
-            color(0, 255, 255),
-            color(255, 165, 0),
-            color(128, 0, 128),
-            color(255, 0, 0),
-            color(0)
-        ];
-      
-        // Set text size
-        textSize(110);
+        textSize(100);
         textAlign(CENTER,CENTER);
-        
-        // title initial x position
-        let x = width/2 -330;
-      
-        // for loop to display letters with different colors
-        for (let i = 0; i < title.length; i++) {
-            fill(colors[i]); // sets fill colour in order of the array
-            text(title[i], x, height/4); // draw letter at position
-            x += textWidth(title[i]) + 10; // adds value to x position of next letter
-      }
+        text(`speech  pictionAIry`,width/2,height/4);
+        erase();
+        text(`speech`,width/2-300,height/4);
+        text(`AI`,width/2+297,height/4);
+        noErase();
     }
 
     displayCards() {
         //display card piles
+    erase();
+    rect(width/2-200,height/2,350,150);
+    rect(width/2+200,height/2,350,150);
+    rect(width/2,height/1.4,350,150);
+    noErase();
     rectMode(CENTER);
     noStroke();
-    fill(this.pilePickedColor.object);
+    fill(this.pilePickedColor.draw);
     rect(width/2-200,height/2,350,150);
-    fill(this.pilePickedColor.ppa);
+    fill(this.pilePickedColor.guess);
     rect(width/2+200,height/2,350,150);
-    fill(this.pilePickedColor.movie);
-    rect(width/2-200,height/2+200,350,150);
-    fill(this.pilePickedColor.all);
-    rect(width/2+200,height/2+200,350,150);
+    fill(this.pilePickedColor.idk);
+    rect(width/2,height/1.4,350,150);
 
     //display piles text
     fill(255);
     textSize(40);
-    text(`Object`,width/2-200,height/2);
-    text(`Movie`,width/2-200,height/2+200);
-    text(`All Play`,width/2+200,height/2+200);
-    textSize(32);
-    text(`Person/Place/Animal`,width/2+200,height/2);
+    text(`Draw`,width/2-200,height/2);
+    text(`Guess`,width/2+200,height/2);
+    text(`IDK? you pick`,width/2,height/1.4);
+    userCard = round(random(0,8)); // will leave this random running at home
     }
 
-    categoryWheel() { // this method shuffles the piles and gives a random card when a category is chosen
-        //
-        if (cardDrawn === true) {
-            if (chosenCategory === `allPlay`) {
-                cardNumber = round(random(8));
-                this.pilePickedColor.all = color(255,126,13);
-            }
-            else if (chosenCategory === `object`) {
-                cardNumber = round(random(0,2));
-                this.pilePickedColor.object = color(255,126,13);
-            }
-            else if (chosenCategory === `ppa`) {
-                cardNumber = round(random(3,5));
-                this.pilePickedColor.ppa = color(255,126,13);
-            }
-            else if (chosenCategory === `movie`) {
-                cardNumber = round(random(6,8));
-                this.pilePickedColor.movie = color(255,126,13);
-            }
-
-            // sets the card according to the card number
-            cards[cardNumber];
-
-            // shows the timer to start and countsdown
-            if (frameCount % 60 == 0) {
-                startTimer--
-            }
-            fill(0);
-            textSize(50);
-            text(startTimer,width/2,height/2+110);
-
-            // changes state when timer reaches 0
-            if (startTimer <= 0) {
-                startTimer = 0;
-                state = `card`
-                // resets a few parameters used in card
-                cardTimer = 63;
-                rightCard = false;
-                video[cardNumber].time(0);
-                video[cardNumber].play();
-                speechRecognizer.resultString = ` `; // clears the string
-            }
+    handleInputAnimations() { // this method for the buttons and for play selection
+        this.onDraw = collidePointRect(mouseX,mouseY,width/2-200-350/2,height/2-150/2,350,150);
+        this.onGuess = collidePointRect(mouseX,mouseY,width/2+200-350/2,height/2-150/2,350,150);
+        this.onIDK = collidePointRect(mouseX,mouseY,width/2-350/2,height/1.4-150/2,350,150);
+        //toggles the colors of the buttons
+        if (this.onDraw === true) {
+            this.pilePickedColor.draw = color(252,3,119);
         }
         else {
-            this.pilePickedColor.all = color(255,0,0);
-            this.pilePickedColor.object = color(255,0,0);
-            this.pilePickedColor.ppa = color(255,0,0);
-            this.pilePickedColor.movie = color(255,0,0);
+            this.pilePickedColor.draw = color(0,0);
+            }
+        if (this.onGuess === true) {
+            this.pilePickedColor.guess = color(252,3,119);
+        }
+        else {
+            this.pilePickedColor.guess = color(0,0);
+        }
+        if (this.onIDK === true) {
+            this.pilePickedColor.idk = color(252,3,119);
+        }
+        else {
+            this.pilePickedColor.idk = color(0,0);
+        }
+        // starts animation fast based on the frame rate
+        if (animateRandom === true && frameCount % this.countRandomPlus == 0) {
+            this.countRandom++; 
+            this.randomPlay = round(random(0,1));
+            if (this.countRandom >= 60) { //slows animation by increasing the count
+                this.countRandomPlusMax ++;
+                this.countRandomPlus += this.countRandomPlusMax;
+            }
+            else if (this.countRandom >= 68) {
+                this.countRandomPlus++;
+            } // randomly assigns one of the two states
+            if (this.countRandom >= 70) {
+                this.countRandomPlus = 0; // stops the random
+                animateRandom = false;
+                if (this.randomPlay === 0) {
+                    state = `sketch`;
+                    this.countRandom = 0
+                    this.countRandomPlus = 5
+                    this.countRandomPlusMax = 0
+                    this.randomPlay = undefined;
+                    rightGuess = false;
+                }
+                else if (this.randomPlay === 1) {
+                    state = `guess`;
+                    speechRecognizer.start();
+                    this.countRandom = 0
+                    this.countRandomPlus = 5
+                    this.countRandomPlusMax = 0
+                    this.randomPlay = undefined;
+                }
+            }
+        }
+        // handles the colors
+        if (this.randomPlay === 0) {
+            this.pilePickedColor.draw = color(252,3,119);
+            this.pilePickedColor.guess = color(0,0);
+        }
+        else if (this.randomPlay === 1) {
+            this.pilePickedColor.guess = color(252,3,119);
+            this.pilePickedColor.draw = color(0,0);
         }
     }
-
-    handleSpeechInput() { // method for audio capture
-        if (speechRecognizer.resultValue) {
-            let lowerCaseResult = speechRecognizer.resultString.toLowerCase(); // makes all the input lower case
-
-            // if statement recognize the category chosen
-            if (lowerCaseResult.match("object")) {
-                speechRecognizer.onResult;
-                cardDrawn = true;
-                chosenCategory = `object`;
+        mousePressed() {
+            if (this.onDraw) {
+                state = `sketch`
+                rightGuess = false;
             }
-            else if (lowerCaseResult.match("person") ||
-                    lowerCaseResult.match("place") ||
-                    lowerCaseResult.match("animal")) {
-                speechRecognizer.onResult;
-                cardDrawn = true;
-                chosenCategory = `ppa`;
+            else if (this.onGuess) {
+                state = `guess`
+                speechRecognizer.start();
             }
-            else if (lowerCaseResult.match("movie") ||
-                    lowerCaseResult.match("film")) {
-                speechRecognizer.onResult;
-                cardDrawn = true;
-                chosenCategory = `movie`;
+            else if (this.onIDK) {
+                animateRandom = true;
             }
-            else if (lowerCaseResult.match("all play")) {
-                speechRecognizer.onResult;
-                cardDrawn = true;
-                chosenCategory = `allPlay`;
-            } 
+            // resets a few parameters used in sketch, guess and card
+            drawTimer = 63;
+            intelCanvas.background(255);
+            cardTimer = 63;
+            rightCard = false;
+            video[cardNumber].time(0);
+            video[cardNumber].play();
+            speechRecognizer.resultString = ` `;
         }
     }
-}
+    

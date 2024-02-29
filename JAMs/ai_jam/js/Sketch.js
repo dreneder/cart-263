@@ -1,4 +1,4 @@
-class Drawing{
+class Sketch{
     constructor(x,y) {
       this.x = x;
       this.y = y;
@@ -30,13 +30,13 @@ class Drawing{
         if (this.onCanvas) {
           noCursor();
           if (this.pencil.button) {
-            strokeWeight(35);
+            strokeWeight(45);
             point(mouseX,mouseY);
           }
           else if (this.eraser.button) {
             strokeWeight(3);
             fill(255);
-            rect(mouseX,mouseY,40);
+            rect(mouseX,mouseY,50);
           }
         }
         else {cursor()}
@@ -44,12 +44,13 @@ class Drawing{
       }
 
     displayButtons() {
-        // display all the buttons for the canvas
+        // calculates the positions for the buttons
         this.onPencil = collidePointRect(mouseX, mouseY,this.x-65-25,this.y+40+this.height/2-25,50,50);
         this.onEraser = collidePointRect(mouseX, mouseY,this.x-25,this.y+40+this.height/2-25,50,50);
         this.onClear = collidePointRect(mouseX, mouseY,this.x+90-50,this.y+40+this.height/2-25,100,50);
-        this.onReturn = collidePointRect(mouseX, mouseY,this.x+65-this.width/2,this.y+120+this.height/2,130,60);
+        this.onReturn = collidePointRect(mouseX, mouseY,this.x-this.width/2,this.y+90+this.height/2,130,60);
         
+        // display all the buttons for the canvas
         push();
         translate(this.x,this.y);
         rectMode(CENTER);
@@ -92,44 +93,46 @@ class Drawing{
         
     }
 
-      
-
-
-    handleInput() {
-    // calculates mouse position and does button action when pressed
-      if (mouseIsPressed) {
-        if (this.onCanvas) {
-          if (this.pencil.button) {
-              intelCanvas.stroke(0);
-              intelCanvas.strokeWeight(35);
-              intelCanvas.line(mouseX-this.width/8, mouseY-this.height/4, pmouseX-this.width/8, pmouseY-this.height/4);
-            } 
-            else if (this.eraser.button) {
-            intelCanvas.stroke(255);
-            intelCanvas.strokeWeight(45);
-            intelCanvas.line(mouseX-this.width/8, mouseY-this.height/4, pmouseX-this.width/8, pmouseY-this.height/4);
-            }
-        }
+    mousePressed() {
+        // toggles between pencil and eraser
         if (this.onPencil) {
-          this.pencil.button = true;
-          this.eraser.button = false;
+            this.pencil.button = true;
+            this.eraser.button = false;
         }
         else if (this.onEraser) {
-          this.eraser.button = true;
-          this.pencil.button = false;
+            this.eraser.button = true;
+            this.pencil.button = false;
         }
+        // toggles the variable to clear the canvas, look bellow
         else if (this.onClear) {
-          this.clear.button = true;
+            this.clear.button = true;
         }
-        else if (this.onReturn) {
-        state = `home`;
-      }
-      }
-      else {
-        this.clear.button = false;
-        if (frameCount % 480 == 0) {
-          // filters the canvas a bit to help the identifier
-          intelCanvas.filter(THRESHOLD, 0.5);
+        else if (this.onReturn) { // returns home
+            state = `home`;
+            animateRandom = false;
+        }
+        else {
+            this.clear.button = false;
+            if (frameCount % 480 == 0) {
+              // filters the canvas a bit to help the identifier
+              intelCanvas.filter(THRESHOLD, 0.5);
+            }
+            }
+    }
+    handleInput() {
+        if (mouseIsPressed) {
+        // calculates mouse position and does button action when pressed
+        if (this.onCanvas) {
+            if (this.pencil.button) {
+                intelCanvas.stroke(0);
+                intelCanvas.strokeWeight(45);
+                intelCanvas.line(mouseX-this.width/8, mouseY-this.height/4, pmouseX-this.width/8, pmouseY-this.height/4);
+            } 
+            else if (this.eraser.button) {
+                intelCanvas.stroke(255);
+                intelCanvas.strokeWeight(55);
+                intelCanvas.line(mouseX-this.width/8, mouseY-this.height/4, pmouseX-this.width/8, pmouseY-this.height/4);
+            }
         }
         }
       // changes the look of buttons
@@ -150,26 +153,30 @@ class Drawing{
 
 
     displayCard() { //  display the card for the user
+      push();
       textAlign(CENTER,CENTER);
       fill(0);
       noStroke();
       textSize(25);
-      text(`draw`,this.x-this.width/2+190,this.y-this.height/2-130);
+      text(guessCategory,this.x-this.width/2+190,this.y-this.height/2-130);
       textSize(50);
-      text(userCard,this.x-this.width/2+190,this.y-this.height/2-70);
+      text(guessCards[userCard],this.x-this.width/2+190,this.y-this.height/2-70);
       fill(this.guessColor);
       text(currentGuess,this.x+this.width/2-150,this.y-this.height/2-100);
       stroke(0);
       noFill();
-      strokeWeight(3);
-      rect(this.x-this.width/2,this.y-this.height/2-170,380,150);
-      
+      pop();
+
     // actions for when the card is right
-    if (currentGuess === userCard) {
+    if (currentGuess === guessCards[userCard]) {
       rightGuess = true;
-      currentGuess = userCard
-      this.guessColor = color(0,255,0);
       }
+    if (rightGuess) {
+        currentGuess = guessCards[userCard]
+        this.guessColor = color(0,255,0);
+        cursor();
+    }
+    else {this.guessColor = color(255,0,0);}
     }
 
     displayTimer() {
@@ -182,7 +189,7 @@ class Drawing{
         }
         else if (rightGuess === true && drawTimer >= 3) { // stops the mapped timer and goes to three seconds
             drawTimer = 2.9;
-            computer.speak(`Oh I know, it's ${userCard}`); // plays a cheer sound when the user is correct
+            computer.speak(`Oh I know, it's ${guessCards[userCard]}`); // plays a cheer sound when the user is correct
         }
 
         //display the timer
@@ -202,9 +209,7 @@ class Drawing{
             // resets a few parameters used in home
             startTimer = 3;
             cardDrawn = false;
-            // speechRecognizer.resultString = ` `; // clears the string
         }
     }
-   
 }
 

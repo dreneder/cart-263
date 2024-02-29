@@ -19,12 +19,15 @@
 "use strict";
 
 //variable for states
-let state = `start`;
+let state = `home`;
 
 // variables for classes
 let home;
+let guess;
 let card;
+let sketch;
 let confetti = [];
+let animateRandom = false;
 
 // setting an array of colours for the confetti
 let confettiColor = [];
@@ -57,6 +60,27 @@ let cheer;
 
 // constant for the speech recognition
 const speechRecognizer = new p5.SpeechRec();
+
+//constant for doodle identifier
+let intelCanvas;
+let doodleClassifier;
+let currentPath;
+
+// timer for drawing
+let drawTimer = 63;
+
+// speech for the computer to guess the drawing
+let computer = new p5.Speech();
+let speechplaying = 0;
+let currentGuess;
+let previousGuess;
+let rightGuess = false;
+
+// same as for guessing but for drawing
+let guessCards = [`pineapple`,`bicycle`,`calculator`,`beach`,`panda`,`mona lisa`,`twister`,`the little mermaid`,`the lion king`];
+let guessCategory;
+// to select one of the cards at random
+let userCard;
 
 
 /**
@@ -92,7 +116,17 @@ function setup() {
     
     // declaring the classes to used in draw
     home = new Home();
+    guess = new Guess();
     card = new Card();
+
+        //canvas for the doodle classifier
+    intelCanvas = createGraphics(windowWidth/5*4, windowHeight/3*2);
+    intelCanvas.background(255);
+
+    doodleClassifier = ml5.imageClassifier(`DoodleNet`, modelReady);
+    doodleClassifier.classify(intelCanvas, handleResult);
+
+    sketch = new Sketch(width/2,height/2);
     
     //sets the confetti to be used if win
     confettiColor = [color(0,174,239), color(236,0,140), color(114,200,182)];
@@ -117,8 +151,13 @@ function draw() {
     else if (state === `home`) {
         home.displayTitle();
         home.displayCards();
-        home.categoryWheel();
-        home.handleSpeechInput();
+        home.handleInputAnimations();
+    }
+    else if (state === `guess`) {
+        guess.displayTitle();
+        guess.displayCards();
+        guess.categoryWheel();
+        guess.handleSpeechInput();
     }
     else if (state === `card`) {
         card.displayInput();
@@ -126,23 +165,98 @@ function draw() {
         card.displayTimer();
         card.handleSpeechInput();
     }    
-
+    else if (state === `sketch`) {
+        sketch.displayBoard();
+        sketch.displayButtons();
+        sketch.handleInput();
+        sketch.displayCard();
+        sketch.displayTimer();
+    }    
+    
     // confetti drops if win, yay!
     if (rightCard === true && state === `card`) {
         for (let i = 0; i < confetti.length; i++) {
             confetti[i].displayConfetti();
             if (confetti[i] >= height*1.5) {
-                confetti[i].splice;
+                confetti.length = 0;
+            }
+        }
+    }
+    // made a second one for the sketch
+    if (rightGuess === true && state === `sketch`) {
+        for (let i = 0; i < confetti.length; i++) {
+            confetti[i].displayConfetti();
+            if (confetti[i] >= height*1.5) {
+                confetti.length = 0;
             }
         }
     }
 }
 
-function keyPressed() {
-    if (keyCode === 32 && state === `start`) {
-        state = `home`;
+function modelReady() {
+    console.log(`model loaded`); // following ML5 instructions
+  } 
 
-            // plays the video again after a user interaction
-            video[0,1,2,3,4,5,6,7,8].play();
+// I was not able to move this into the class
+function handleResult(error, results) {
+     //  for debugging
+    if (error) {
+      console.error(error)
+      return;
+    }
+    // console.log(results[0].label,100*results[0].confidence);
+    
+    // getting results from the graphic
+    doodleClassifier.classify(intelCanvas, handleResult); 
+    currentGuess = results[0].label.replace('_', ' '); // removing unwanted characters
+    // changing initial strings to show nothing
+    if (results[0].label === `line` || results[0].label.match("object")) {
+      currentGuess = ``;
+    }
+    // changing some of the string results to match the cards
+    if (guessCategory === `movie`) {
+        if (results[0].label.match("hurricane") ||
+            results[0].label.match("tornado")) {
+            currentGuess = `twister`;
+        }
+      else if (results[0].label.match("mermaid")) {
+              currentGuess = `the little mermaid`;
+          }
+      else if (results[0].label.match("lion")) {
+              currentGuess = `the lion king`;
+          }
+    }
+    else if (results[0].label.match("Mona_Lisa")) {
+            currentGuess = `mona lisa`;
+    }
+    // to sort the category
+    if (userCard >= 0 && userCard <= 2) {
+            guessCategory = `object`;
+        }
+    else if (userCard >= 3 && userCard <= 5) {
+            guessCategory = `person/place/animal`;
+        }
+    else if (userCard >= 6 && userCard <= 8) {
+            guessCategory = `movie`;
+        }
+  }
+  
+  function mousePressed() {
+    if (state === `home`) {
+        home.mousePressed();
+    }
+    if (state === `sketch`) {
+        sketch.mousePressed();
     }
 }
+
+  // sais the guessed drawing
+function mouseReleased() {
+    if (state === `sketch`) {
+        if (currentGuess != previousGuess && // only when the string is different from the previous one
+          rightGuess === false) {
+          computer.speak(currentGuess);
+          previousGuess = currentGuess;
+        }
+    }
+  }

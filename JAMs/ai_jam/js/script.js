@@ -197,7 +197,7 @@ function modelReady() {
     console.log(`model loaded`); // following ML5 instructions
   } 
 
-// I was not able to move this into the class
+// This is for the doodle identifier, I was not able to move this into the class
 function handleResult(error, results) {
      //  for debugging
     if (error) {
@@ -207,8 +207,10 @@ function handleResult(error, results) {
     // console.log(results[0].label,100*results[0].confidence);
     
     // getting results from the graphic
+    if (rightGuess === false) {
     doodleClassifier.classify(intelCanvas, handleResult); 
     currentGuess = results[0].label.replace('_', ' '); // removing unwanted characters
+    }
     // changing initial strings to show nothing
     if (results[0].label === `line` || results[0].label.match("object")) {
       currentGuess = ``;

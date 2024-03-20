@@ -1,7 +1,7 @@
-# Speech Pictionary
+# Speech PictionAIry
 
-The Speech Pictionary uses the P5 and P5 Speech libraries to give users the opportunity to play the classic Pictionary game with the computer using nothing but voice commands.
-The program is always listening, so to pick a card, just say the category desired and to guess the drawing just say what you think it is, or just say "return to home" if you wish to pick another card. There is a slight delay for voice capture which is part of the voice processing of the library.
+The Speech PictionAIry uses my previous game that used the P5 and P5 Speech libraries and expands on the idea of playing a drawing game with the computer. In addition to using voice commands, now the users can also draw on a board and the ML5 library will use its’ directory to classify the doodles. P5 Speech is used to say what the machine is guessing.
+The old game was made into another two states and the new one into one, totally controlled by the mouse buttons. The brush had to be made thick in order for it to work.
 
 Reference for the videos:
 
@@ -14,3 +14,15 @@ Reference for the videos:
 6 - up
 7 - ocean's eleven
 8 - midnight in paris
+
+Reference for the drawings:
+
+0 - pinapple
+1 - bicycle
+2 - calculator
+3 - beach
+4 - panda
+5 - mona lisa
+6 - twister
+7 - the little mermaid
+8 - the lion king

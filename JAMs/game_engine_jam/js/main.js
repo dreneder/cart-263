@@ -1,8 +1,8 @@
 /**
-Desperately Seeking Sadness
+Invade Spacers
 André Neder
 
-An emoji in search of satisfying sadness in a world of positivity.
+It's like Space Invaders, but you're the bad guy (duh). 
 */
 
 "use strict";

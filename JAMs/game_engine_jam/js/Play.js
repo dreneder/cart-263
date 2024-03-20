@@ -20,8 +20,8 @@ class Play extends Phaser.Scene {
             // bounceX: 0.5,
             // bounceY: 0.5,
             collideWorldBounds: true,
-            dragX: 50,
-            dragY: 50
+            // dragX: 50,
+            // dragY: 50
         });
         Phaser.Actions.RandomRectangle(this.happiness.getChildren(), this.physics.world.bounds);
 

@@ -9,8 +9,8 @@ It's like Space Invaders, but you're the bad guy (duh).
 
 let config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 1000,
     physics: {
         default: `arcade`
     },

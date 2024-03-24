@@ -7,54 +7,51 @@ class Play extends Phaser.Scene {
 
     create() {
         //Create the avatar
-        this.avatar = this.physics.add.sprite(400, 300, `avatar`);
+        this.avatar = this.physics.add.sprite(600, 100, `avatar`);
         this.avatar.setCollideWorldBounds(true);
+        this.avatar.setScale(.1);
+        this.avatar.setAngle(180);
+        this.avatar.setVelocityX(50);
+        this.avatar.setBounceX(1);
 
-        // let x = Math.random() * this.sys.canvas.width;
-        // let y = Math.random() * this.sys.canvas.height;
-        // this.sadness = this.physics.add.sprite(x, y, `thumbs-down`);
 
-        this.happiness = this.physics.add.group({
-            key: `thumbs-up`,
-            quantity: 10,
-            // bounceX: 0.5,
-            // bounceY: 0.5,
+        this.invader = this.physics.add.group({
+            key: `invader`,
+            quantity: 50,
             collideWorldBounds: true,
-            // dragX: 50,
-            // dragY: 50
         });
-        Phaser.Actions.RandomRectangle(this.happiness.getChildren(), this.physics.world.bounds);
 
-        this.physics.add.overlap(this.avatar, this.sadness, this.getSad, null, this);
-        this.physics.add.collider(this.avatar, this.happiness);
-        this.physics.add.collider(this.happiness, this.happiness);
+
+        Phaser.Actions.GridAlign(this.invader.getChildren(), {
+            width: 10,
+            
+            cellWidth: 70,
+            cellHeight: 50,
+            x: 200,
+            y: 500
+        });
+        
+   
 
         this.cursors = this.input.keyboard.createCursorKeys();
-    }
 
-    getSad(avatar, sadness) {
-        let x = Math.random() * this.sys.canvas.width;
-        let y = Math.random() * this.sys.canvas.height;
-        this.sadness.setPosition(x,y);
+        
     }
-
+    
+    
     update() {
         if (this.cursors.left.isDown) {
-            this.avatar.setAngularVelocity(-150);
-        }
+                this.invader.setVelocityX(-100);
+            }
         else if (this.cursors.right.isDown) {
-            this.avatar.setAngularVelocity(150);
-        }
+                this.invader.setVelocityX(100);
+            }
         else {
-            this.avatar.setAngularVelocity(0);
-        }
+                this.invader.setVelocityX(0);
+            }
 
-        if (this.cursors.up.isDown) {
-            this.physics.velocityFromRotation(this.avatar.rotation, 200, this.avatar.body.acceleration);
-        }
-        else {
-            this.avatar.setAcceleration(0);
-        }
+
     }
     
 }
+

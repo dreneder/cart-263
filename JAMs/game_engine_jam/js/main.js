@@ -2,7 +2,8 @@
 Invade Spacers
 André Neder
 
-It's like Space Invaders, but you're the bad guy (duh). 
+It's like Space Invaders, but you're the bad guy (duh). The objective is to either destroy the attacker
+ship by shooting at it or to arrive at the Y line to pass it
 */
 
 "use strict";

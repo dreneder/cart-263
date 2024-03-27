@@ -5,6 +5,7 @@ class Play extends Phaser.Scene {
         });
     }
 
+    
     create() {
         // Create the avatar
         this.avatar = this.physics.add.sprite(600, 100, `avatar`);
@@ -14,50 +15,28 @@ class Play extends Phaser.Scene {
         this.avatar.setVelocityX(50);
         this.avatar.setBounceX(1);
 
-        // this.invader.setVelocityY(-100);
-        // Create the invader group
-        this.invaders = this.add.group({
-            quantity: 10,
-            gridAlign: {
-                width: 10,
-            cellWidth: 70,
-            x: 200,
-            y: 500
-        }
+        this.invaders = this.physics.add.group({
         });
-
-        let invader = [];
-
-        for (let i = 0; i < 9; i++) {
-            let groupNumber = `invader${i}`;
-            let group = this.physics.add.group({
-                key: `invader`,
-                quantity: 5,
-                gridAlign: {
-                    width: 1,
-                    height: 5,
-                    cellHeight: 50,
-
-                },
-                collideWorldBounds: true
-            });
-            invader.push(group);
-            this.invaders.add(group);
-            this[groupNumber] = group;
-        }
-
-        // this.invaders.add(this.invader0);
-
         
+        let invaderNumber = [];
 
-        
+        for (let i = 0; i < 50; i++) {
+            let invaderName = `invader${i}`;
+            this[invaderName] = this.physics.add.sprite(200+i*70,0,`invader`);
+            this[invaderName].setCollideWorldBounds(true);
+            invaderNumber.push(this[invaderName]);
+            this.invaders.add(this[invaderName]);
+        };
 
-        // Phaser.Actions.GridAlign(this.invaders.getChildren(),{
-        //     width: 10,
-        //     cellWidth: 70,
-        //     x: 200,
-        //     y: 500
-        // });
+        // Align the invader sprites in a grid
+    Phaser.Actions.GridAlign(this.invaders.getChildren(), {
+        width: 10,
+        height: 5,
+        cellWidth: 70,
+        cellHeight: 50,
+        x: 200,
+        y: 500
+    });
 
         // Create a group for bullets
         this.bullet = this.physics.add.group({
@@ -65,7 +44,19 @@ class Play extends Phaser.Scene {
         });
         
 
+        
+        this.input.on('pointerup', event => {
+            const invaderAtIndex1 = this.invaders.getChildren()[3];
+            
+            if (invaderAtIndex1) {
+                // Destroy the invader sprite at index #1
+                invaderAtIndex1.destroy();
+                // this.invaders.destroy();
+            }
+        }, this);
+        
         this.cursors = this.input.keyboard.createCursorKeys();
+        // creating number keys to shoot
         this.numberKeys = this.input.keyboard.addKeys({
             1: Phaser.Input.Keyboard.KeyCodes.ONE,
             2: Phaser.Input.Keyboard.KeyCodes.TWO,
@@ -78,52 +69,62 @@ class Play extends Phaser.Scene {
             9: Phaser.Input.Keyboard.KeyCodes.NINE,
             10: Phaser.Input.Keyboard.KeyCodes.ZERO
         });
-        
-
-        
-        this.input.on('pointerup', event => {
-            const invaderAtIndex1 = this.invader1.getChildren()[3];
-
-    if (invaderAtIndex1) {
-        // Destroy the invader sprite at index #1
-        invaderAtIndex1.destroy();
-    }
-}, this);
-        
     }
    
 
     update() {
         // Move the invader group
         if (this.cursors.left.isDown) {
-            this.invader1.setVelocityX(-100);
+            this.invaders.setVelocityX(-100);
         } else if (this.cursors.right.isDown) {
-            this.invader1.setVelocityX(100);
+            this.invaders.setVelocityX(100);
         } else {
-            this.invader1.setVelocityX(0);
+            this.invaders.setVelocityX(0);
         }
-  
+       // Calculate the minimum and maximum x positions based on the invaders group
+    const invadersChildren = this.invaders.getChildren();
+    if (invadersChildren.length > 0) {
+        const minX = Math.min(...invadersChildren.map(invader => invader.x));
+        const maxX = Math.max(...invadersChildren.map(invader => invader.x + invader.width));
+        
+        // Ensure the avatar's x position stays within the range of minX and maxX
+        this.avatar.x = Phaser.Math.Clamp(this.avatar.x, minX, maxX - this.avatar.width);
+    }
 
-     // Check for number key presses
-    for (let key in this.numberKeys) {
-        if (this.numberKeys[key].isDown) {
-            if (key === 0) {
-                key = 10;
-            }
-            const column = parseInt(key, 10) - 1; // Extract the column number
-            const invaderIndex = column; // Each column has 5 invaders (10 rows, 2 invaders per row)
-            const invaderInColumn = this.invader1.getChildren()[invaderIndex]; // Get the invader sprite in that column
-            if (invaderInColumn) {
-                // Create a bullet at the invader's position
-                this.bullet.create(invaderInColumn.x, invaderInColumn.y,`bullet`);
+ // Check for number key presses
+for (let key in this.numberKeys) {
+    if (this.numberKeys[key].isDown) {
+        let row = 1;
+        for (let i = 0; i < row; i++) {
+        // Convert key to a number
+        let column = parseInt(key, 10) - 1;
+
+        let invaderName = `invader${column}`;
+
+        // Check if the invader sprite exists and is active (not destroyed)
+        if (this[invaderName] && this[invaderName].active) {
+            // Create a bullet at the invader's position
+            this.bullet.create(this[invaderName].x, this[invaderName].y, `bullet`);
+            this.bullet.setVelocityY(-500);
+        } else {
+            // Add 10 to the column number
+            column += i*10;
+            // Create a new invader name based on the updated column number
+            invaderName = `invader${column}`;
+            // Check if the invader sprite exists and is active (not destroyed) after adding 10 to the column number
+            if (this[invaderName] && this[invaderName].active) {
+                // Create a bullet at the new invader's position
+                this.bullet.create(this[invaderName].x, this[invaderName].y, `bullet`);
                 this.bullet.setVelocityY(-500);
-    
-    
             }
-            console.log(column)
+            else {if (row <= 5) {
+                        row++
+            }
         }
+        }
+        }
+        console.log(row);
     }
-    
+}
     }
-    
 }

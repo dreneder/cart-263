@@ -15,7 +15,7 @@ class Boot extends Phaser.Scene {
         this.load.spritesheet('invaderr', 'assets/images/invaderr.png', { frameWidth: 50, frameHeight: 36 });
 
         this.load.on(`complete`, () => {
-            this.scene.start(`play`);
+            this.scene.start(`start`);
         });
     }
 

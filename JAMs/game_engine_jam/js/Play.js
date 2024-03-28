@@ -108,7 +108,6 @@ class Play extends Phaser.Scene {
 
         this.physics.add.collider(this.shipBullet, this.invaders, this.invaderHit, null, this);
 
-
     }
    
     shipShootBullet() {
@@ -136,6 +135,8 @@ class Play extends Phaser.Scene {
         bullet.destroy(); // Destroy the bullet
         invader.destroy(); // Destroy the invader
     }
+
+    
 
     update() {
         // Move the invader group
@@ -195,40 +196,44 @@ for (let key in this.numberKeys) {
                 // Create a bullet at the invader's position
                 this.invBullet.create(this[invaderName].x, this[invaderName].y, `bullet`);
                 this.invBullet.setVelocityY(-500);
-
+                this[invaderName].setTint(0xff0000);
+                
                 // Set cooldown for this invader
                 this[invaderName].cooldown = true;
-
+                
                 // Set a timer to reset the cooldown after 3 seconds
                 setTimeout(() => {
                     this[invaderName].cooldown = false;
+                    this[invaderName].clearTint();
                 }, 3000);
             }
-            } else {
-                // Add 10 to the column number
-                column += i * 10;
-                // Create a new invader name based on the updated column number
-                invaderName = `invader${column}`;
-                // Check if the invader sprite exists and is active (not destroyed) after adding 10 to the column number
-                if (this[invaderName] && this[invaderName].active) {
-                    if (!this[invaderName].cooldown) {
+        } else {
+            // Add 10 to the column number
+            column += i * 10;
+            // Create a new invader name based on the updated column number
+            invaderName = `invader${column}`;
+            // Check if the invader sprite exists and is active (not destroyed) after adding 10 to the column number
+            if (this[invaderName] && this[invaderName].active) {
+                if (!this[invaderName].cooldown) {
                     // Create a bullet at the new invader's position
                     this.invBullet.create(this[invaderName].x, this[invaderName].y, `bullet`);
                     this.invBullet.setVelocityY(-500);
-
+                    this[invaderName].setTint(0xff0000);
+                    
                     // Set cooldown for this invader
                     this[invaderName].cooldown = true;
-
+                    
                     // Set a timer to reset the cooldown after 3 seconds
                     setTimeout(() => {
                         this[invaderName].cooldown = false;
+                        this[invaderName].clearTint();
                     }, 3000);
                 }
-                } else if (row <= 5) {
-                    row++;
-                }
+            } else if (row <= 5) {
+                row++;
             }
         }
+    }
     }
 }
 // If all invaders are destroyed, you lose

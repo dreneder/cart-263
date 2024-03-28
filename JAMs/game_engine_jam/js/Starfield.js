@@ -6,8 +6,8 @@ class Starfield extends Phaser.Scene {
 
         this.stars;
 
-        this.distance = 500;
-        this.speed = 250;
+        this.distance = 5000;
+        this.speed = 500;
 
         this.max = 300;
         this.xx = [];
@@ -27,11 +27,11 @@ class Starfield extends Phaser.Scene {
 
         for (let i = 0; i < this.max; i++)
         {
-            this.xx[i] = Math.floor(Math.random() * 800) - 400;
-            this.yy[i] = Math.floor(Math.random() * 600) - 300;
+            this.xx[i] = Math.floor(Math.random() * 1500) - 400;
+            this.yy[i] = Math.floor(Math.random() * 6000) - 100;
             this.zz[i] = Math.floor(Math.random() * 1700) - 100;
 
-            let perspective = this.distance / (this.distance - this.zz[i]);
+            let perspective = this.distance / (this.distance - this.xx[i]);
             let x = 400 + this.xx[i] * perspective;
             let y = 300 + this.yy[i] * perspective;
 
@@ -44,14 +44,14 @@ class Starfield extends Phaser.Scene {
         for (let i = 0; i < this.max; i++)
         {
             let perspective = this.distance / (this.distance - this.zz[i]);
-            let x = 600 + this.xx[i] * perspective;
-            let y = 300 + this.yy[i] * perspective;
+            let x = 300 + this.xx[i] * perspective;
+            let y = 0 + this.yy[i] * perspective;
 
-            this.zz[i] += this.speed * (delta / 1000);
+            this.yy[i] += this.speed * (delta / 10000);
 
-            if (this.zz[i] > 300)
+            if (this.yy[i] > 1000)
             {
-                this.zz[i] -= 600;
+                this.yy[i] -= 1000;
             }
 
             let bob = this.stars.children.list[i];

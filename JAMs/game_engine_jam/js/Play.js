@@ -12,18 +12,22 @@ class Play extends Phaser.Scene {
         this.avatar.setCollideWorldBounds(true);
         this.avatar.setScale(0.15);
         this.avatar.setAngle(180);
-        this.avatar.setVelocityX(50);
+        this.avatar.setVelocityX(150);
         this.avatar.setBounceX(1);
-
+        
         this.invaders = this.physics.add.group({
+            collideWorldBounds: true,
         });
         
         let invaderNumber = [];
 
+        this.childrenLeft = false;
+        this.childrenRight = false;
+
+        //generates invader children for the group
         for (let i = 0; i < 50; i++) {
             let invaderName = `invader${i}`;
-            this[invaderName] = this.physics.add.sprite(200+i*70,0,`invader`);
-            this[invaderName].setCollideWorldBounds(true);
+            this[invaderName] = this.physics.add.sprite(0,0,`invader`);
             invaderNumber.push(this[invaderName]);
             this.invaders.add(this[invaderName]);
         };
@@ -42,9 +46,21 @@ class Play extends Phaser.Scene {
         this.bullet = this.physics.add.group({
             key: `bullet`
         });
-        
 
         
+
+// Loop through each sprite in the group
+this.invaders.getChildren().forEach(invader => {
+    // Check if the invader has reached the left or right bounds of the world
+    if (invader.x <= 0 || invader.x >= this.physics.world.bounds.width) {
+        // Apply logic here when an invader reaches the world bounds
+        // For example, you can change its velocity or position
+       console.log(`reached`)
+    }
+});
+
+
+
         this.input.on('pointerup', event => {
             const invaderAtIndex1 = this.invaders.getChildren()[3];
             
@@ -74,9 +90,9 @@ class Play extends Phaser.Scene {
 
     update() {
         // Move the invader group
-        if (this.cursors.left.isDown) {
+        if (this.cursors.left.isDown && this.childrenLeft === false) {
             this.invaders.setVelocityX(-100);
-        } else if (this.cursors.right.isDown) {
+        } else if (this.cursors.right.isDown && this.childrenRight === false) {
             this.invaders.setVelocityX(100);
         } else {
             this.invaders.setVelocityX(0);
@@ -86,10 +102,17 @@ class Play extends Phaser.Scene {
     if (invadersChildren.length > 0) {
         const minX = Math.min(...invadersChildren.map(invader => invader.x));
         const maxX = Math.max(...invadersChildren.map(invader => invader.x + invader.width));
-        
+        // console.log(minX);
         // Ensure the avatar's x position stays within the range of minX and maxX
-        this.avatar.x = Phaser.Math.Clamp(this.avatar.x, minX, maxX - this.avatar.width);
+        if (this.avatar.x > maxX) {
+            this.avatar.setVelocityX(-150);
+        }
+        else if (this.avatar.x < minX) {
+            this.avatar.setVelocityX(150);
+        }
+        // this.avatar.x = Phaser.Math.Clamp(this.avatar.x, minX, maxX - this.avatar.width);
     }
+
 
  // Check for number key presses
 for (let key in this.numberKeys) {
@@ -100,6 +123,7 @@ for (let key in this.numberKeys) {
         let column = parseInt(key, 10) - 1;
 
         let invaderName = `invader${column}`;
+
 
         // Check if the invader sprite exists and is active (not destroyed)
         if (this[invaderName] && this[invaderName].active) {
@@ -123,8 +147,8 @@ for (let key in this.numberKeys) {
         }
         }
         }
-        console.log(row);
     }
 }
     }
 }
+

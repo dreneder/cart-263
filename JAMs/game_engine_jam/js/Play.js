@@ -175,6 +175,7 @@ class Play extends Phaser.Scene {
         }
         if (minY <= this.avatar.y+this.avatar.height/10) {
             console.log(`win`);
+            this.scene.start('end');
             winGame = true;
         }
     }

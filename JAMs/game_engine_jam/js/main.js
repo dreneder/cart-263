@@ -8,6 +8,9 @@ ship by shooting at it or to arrive at the Y line to pass it
 
 "use strict";
 
+let loseGame = false;
+let winGame = false;
+
 let config = {
     type: Phaser.AUTO,
     width: 1200,
@@ -15,7 +18,7 @@ let config = {
     physics: {
         default: `arcade`
     },
-    scene: [Boot, Play]
+    scene: [Boot, Play, End]
 };
 
 let game = new Phaser.Game(config);

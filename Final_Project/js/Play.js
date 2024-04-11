@@ -14,35 +14,49 @@ class Play extends Phaser.Scene {
         // collideWorldBounds: true
     });
         
-    this.frameRate = 18;
-        let scale = 1.433;
-        for (let i = 0; i < 15; i++) {
-            scale *= 0.75;
-            this.tunnelSegment = this.physics.add.sprite(512,384,`tunnel`).setScale(scale);
-            this.anims.create({
-                key: 'tunnel',
-                frames: this.anims.generateFrameNumbers(`tunnel`),
-                frameRate: this.frameRate,
-                repeat: -1 // Repeat indefinitely
-            });
-            this.tunnel.add(this.tunnelSegment);
-            this.tunnelSegment.play('tunnel');
-        }
+    this.animation = 0;
+
+   
+    
+    let scale = 1.433;
+    for (let i = 0; i < 15; i++) {
+        scale *= 0.75;
+        this.tunnelSegment = this.physics.add.sprite(512,384,`tunnel`).setScale(scale);
+        this.anims.create({
+            key: 'tunnel',
+            frames: this.anims.generateFrameNumbers(`tunnel`),
+            frameRate: 9,
+            repeat: -1 // Repeat indefinitely
+        });
+        this.tunnel.add(this.tunnelSegment);
+        this.tunnelSegment.play('tunnel');
+        
+    }
+    this.tweens.add({
+        targets: this.tunnel.getChildren().anims,
+        timeScale: { from: 0, to: 2 },
+        ease: 'Sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        // repeatDelay: 1000,
+        // hold: 5000,
+        // duraton: 5000
+    });
             
         this.cursors = this.input.keyboard.createCursorKeys();
     }
     update () {
-        // if (this.cursors.up.isDown) {
-        //     // Increase frame rate gradually
-        //     this.frameRate += 1;
-        //     // Set new frame rate for the animation
-        //     // this.tunnel.anims.setTimeScale(this.frameRate);
-        // }
-        // else if (this.cursors.up.isDown) {
-        //     this.frameRate -= 1;
-        //     // Set new frame rate for the animation
-        //     // this.tunnel.anims.setTimeScale(this.frameRate);
-        // }
+        if (this.cursors.up.isDown) {
+            // Increase frame rate gradually
+            this.tunnel.getChildren().timeScale += 0.1;
+            // Set new frame rate for the animation
+            // this.tunnel.anims.setTimeScale(this.frameRate);
+        }
+        else if (this.cursors.up.isDown) {
+            this.tunnel.getChildren().timeScale -= 0.1;
+            // Set new frame rate for the animation
+            // this.tunnel.anims.setTimeScale(this.frameRate);
+        }
         // if (this.cursors.right.isDown) {
         //     this.tunnel.setVelocityX(100);
         // }
@@ -52,7 +66,16 @@ class Play extends Phaser.Scene {
         // else {
         //     this.tunnel.setVelocityX(0);
         // }
-        console.log(this.frameRate);
+        console.log(this.tunnel.getChildren().timeScale);
+
+
+        if (this.animation >= 3) {
+            this.animation = 3
+        }
+        else if (this.animation <= -3) {
+            this.animation = -3
+        }
+    
     }
 }
 

@@ -3,6 +3,7 @@ class Play extends Phaser.Scene {
         super({
             key: `play`
         });
+        this.animation = 0;
     }
 
     
@@ -14,7 +15,6 @@ class Play extends Phaser.Scene {
         // collideWorldBounds: true
     });
         
-    this.animation = 0;
 
    
     
@@ -33,49 +33,74 @@ class Play extends Phaser.Scene {
         
     }
     this.tweens.add({
-        targets: this.tunnel.getChildren().anims,
+        targets: this.tunnel.anims,
         timeScale: { from: 0, to: 2 },
         ease: 'Sine.inOut',
         yoyo: true,
-        repeat: -1,
+        repeat: 0,
         // repeatDelay: 1000,
         // hold: 5000,
         // duraton: 5000
     });
-            
-        this.cursors = this.input.keyboard.createCursorKeys();
+
+    
+    this.cursors = this.input.keyboard.createCursorKeys();
+}
+update () {
+    if (this.cursors.up.isDown) {
+        // Increase frame rate gradually
+        
+        this.animation += 0.01;
+        
+        // Set new frame rate for the animation
+        // this.tunnel.anims.setTimeScale(this.frameRate);
     }
-    update () {
-        if (this.cursors.up.isDown) {
-            // Increase frame rate gradually
-            this.tunnel.getChildren().timeScale += 0.1;
-            // Set new frame rate for the animation
-            // this.tunnel.anims.setTimeScale(this.frameRate);
-        }
-        else if (this.cursors.up.isDown) {
-            this.tunnel.getChildren().timeScale -= 0.1;
-            // Set new frame rate for the animation
-            // this.tunnel.anims.setTimeScale(this.frameRate);
-        }
-        // if (this.cursors.right.isDown) {
+    else if (this.cursors.down.isDown) {
+        
+        this.animation -= 0.01;
+        
+        // Set new frame rate for the animation
+        // this.tunnel.anims.setTimeScale(this.frameRate);
+    }
+    // if (this.cursors.right.isDown) {
         //     this.tunnel.setVelocityX(100);
         // }
         // else if (this.cursors.left.isDown) {
-        //     this.tunnel.setVelocityX(-100);
-        // }
-        // else {
-        //     this.tunnel.setVelocityX(0);
-        // }
-        console.log(this.tunnel.getChildren().timeScale);
-
-
-        if (this.animation >= 3) {
-            this.animation = 3
+            //     this.tunnel.setVelocityX(-100);
+            // }
+            // else {
+                //     this.tunnel.setVelocityX(0);
+                // }
+                console.log(this.animation);
+                
+                if (this.animation < 0) {
+                    this.tunnel.children.iterate(function(child) {
+                        child.anims.reverse();
+                        });
+                }
+                // else {
+                //     this.tunnel.children.iterate(function(child) {
+                //         child.anims.play();
+                //         });
+                // }
+                
+                if (this.animation >= 3) {
+                    this.animation = 3;
+                }
+                else if (this.animation <= -3) {
+                    this.animation = -3;
+                }
+                let test = this.animation;
+                
+                this.tunnel.children.iterate(function(child) {
+                    if (test >= 0) {
+                        child.anims.timeScale = test;
+                    }
+                    else {
+                        child.anims.timeScale = -test;
+                    }
+                    });
+            }
         }
-        else if (this.animation <= -3) {
-            this.animation = -3
-        }
-    
-    }
-}
-
+        
+        

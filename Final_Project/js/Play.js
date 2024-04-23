@@ -78,6 +78,8 @@ update () {
                         child.anims.reverse();
                         });
                 }
+
+                
                 // else {
                 //     this.tunnel.children.iterate(function(child) {
                 //         child.anims.play();

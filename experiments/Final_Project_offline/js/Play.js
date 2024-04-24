@@ -12,49 +12,40 @@ class Play extends Phaser.Scene {
     {  
 
     this.tunnel = this.physics.add.group({
-        // collideWorldBounds: true
+        collideWorldBounds: true
     });
         
 
    
     
-    let scale = 1.433;
-    let tunnelNumber = [];
-    let boundaryNumber = [];
+    let scale = 0.033;
 
-    for (let i = 0; i < 8; i++) {
-        scale *= 0.75;
-        let tunnelSegment = `tunnelSegment${i}`;
-        let boundary = `boundary${i}`;
-        let boundary2 = `boundary${i+1}`;
+    for (let i = 0; i < 13; i++) {
+    scale *= 1.3;
+    let tunnelSegment = `tunnelSegment${i}`;
+    
+    
+    // Create sprite
+    this[tunnelSegment] = this.physics.add.sprite(512, 384, 'tunnel').setScale(scale);
 
-        
-        
-        this[tunnelSegment] = this.physics.add.sprite(512,384,`tunnel`).setScale(scale);
-        this.anims.create({
-            key: 'tunnel',
-            frames: this.anims.generateFrameNumbers(`tunnel`),
-            frameRate: 9,
-            repeat: -1 // Repeat indefinitely
-        });
-        this[boundary] = new Phaser.Geom.Rectangle(512, 384, 1024*scale, 768*scale)
-        tunnelNumber.push(this[tunnelSegment]);
-        boundaryNumber.push(this[boundary]);
-        this.tunnel.add(this[tunnelSegment]);
-        this[tunnelSegment].play('tunnel');
-        
-        this[tunnelSegment].body.setBoundsRectangle(this[boundary2]);
+    // Set collide world bounds
+    this[tunnelSegment].body.setCollideWorldBounds(true);
 
-        this.physics.world.on('worldbounds', (body, up, down, left, right) =>
-        {
-            const { gameObject } = body;
+    // Create animation with a unique key for each sprite
+    this.anims.create({
+        key: `tunnel`,
+        frames: this.anims.generateFrameNumbers('tunnel'),
+        frameRate: 9,
+        repeat: -1 // Repeat indefinitely
+    });
 
-            if (up) { gameObject.setAngle(90); }
-            else if (down) { gameObject.setAngle(-90); }
-            else if (left) { gameObject.setAngle(0); }
-            else if (right) { gameObject.setAngle(180); }
-        });
-    }
+    // Play animation
+    this[tunnelSegment].play(`tunnel`);
+
+    // Add sprite to group or container
+    this.tunnel.add(this[tunnelSegment]);
+
+}
     this.tweens.add({
         targets: this.tunnel.anims,
         timeScale: { from: 0, to: 2 },
@@ -86,15 +77,28 @@ update () {
         // this.tunnel.anims.setTimeScale(this.frameRate);
     }
     if (this.cursors.right.isDown) {
-            this.tunnelSegment().setVelocityX(100);
+            this.tunnelSegment0.setVelocityX(100);
         }
         else if (this.cursors.left.isDown) {
-                this.tunnel.setVelocityX(-100);
+                this.tunnelSegment0.setVelocityX(-100);
             }
             else {
                     this.tunnel.setVelocityX(0);
                 }
-                console.log(this.animation);
+                for (let i = 1; i < 13; i++) {
+    
+                    let tunnelSegment = `tunnelSegment${i}`;
+                    let tunnelSegment2 = `tunnelSegment${i-1}`;
+                    
+                    if (this[tunnelSegment].x*1.3 > this[tunnelSegment2].x*1.3 ||
+                        this[tunnelSegment].x*-1.3 < this[tunnelSegment2].x*-1.3) {
+                        setTimeout(() => {
+                            this[tunnelSegment].body.velocity.x = this[tunnelSegment2].body.velocity.x;
+                        }, 200);
+                    }
+                
+                }
+                console.log(this.tunnelSegment0.body.velocity.x);
                 
                 if (this.animation < 0) {
                     this.tunnel.children.iterate(function(child) {

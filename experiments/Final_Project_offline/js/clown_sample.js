@@ -72,3 +72,13 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
+this.physics.world.on('worldbounds', (body, up, down, left, right) =>
+{
+    const { gameObject } = body;
+    
+    if (up) { gameObject.setAngle(90); }
+    else if (down) { gameObject.setAngle(-90); }
+    else if (left) { gameObject.setAngle(0); }
+    else if (right) { gameObject.setAngle(180); }
+});

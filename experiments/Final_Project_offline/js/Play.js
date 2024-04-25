@@ -98,7 +98,7 @@ update () {
                     }
                 
                 }
-                console.log(this.tunnelSegment0.body.velocity.x);
+                console.log(this.animation);
                 
                 if (this.animation < 0) {
                     this.tunnel.children.iterate(function(child) {

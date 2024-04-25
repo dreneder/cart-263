@@ -1,15 +1,17 @@
-# Invade Spacers
+# Metropolitan
 
-Contrary to Space Invaders, this game lets the player resist the destruction of the armada and invade the planet. This is an attempt to give the player the experience of playing the other side of the classic game.
-Instead of destroying the enemy ship, hitting it with a bullet will only stun it. The player can shoot with any ship and even with all at once, but there is a cooldown of three sescods per invader to shoot. To win, at least one invader must pass the enemy ship, and the player looses when all invaders are destroyed.
+Metropolitan is rather a simulation and an experiment than a game. Its' aim is to simulate a 3D
+environtment of a tunnel using 2D sprites. The only controls available are a lever for speed and
+an emergency button. There are speed, direction and power indicators on the cockpit dash.
+The tunnel animation is mapped to the path in the center console and it actually follows it.
 
 # How to Play:
 
-Start: Launch the game by pressing the spacebar to begin.
-Controls: Use the arrow keys to move the invaders left and right. Press number keys to shoot bullets according to the column of invaders.
-Objective: Shoot down invading aliens while avoiding their projectiles.
-Scoring: Earn points for each alien destroyed. Try to achieve the highest score possible.
-Game Over: The game ends when the player's spaceship is hit by an alien projectile.
+Lever: Controls the torque and speed of the train. At the center level, the power is at 0.
+By moving it up or down, the speed will increase and the train will move forwards or backwards.
+Moving it closer to the center will also slow the speed.
+
+Stop Button (!): Will move the lever to the center and stop the train.
 
 # Technologies Used:
 

@@ -6,22 +6,70 @@ class Play extends Phaser.Scene {
         this.animation = 0;
         this.speed = 0;
         this.maxSpeed = 0;
+        this.speedFactor = 0;
+        this.mapSpeed = 0;
         this.gauge = 0;
         this.direction = true;
+        this.emergency = false;
     }    
-
+    
     create () {
+        this.tunnelX = 600;
+        this.tunnelY = 400;
+        this.tunnel = this.physics.add.group({
+            collideWorldBounds: true
+        });
+            
+        let scale = 0.013;
+    
+        for (let i = 0; i < 7; i++) {
+        scale *= 1.9;
+        let tunnelSegment = `tunnelSegment${i}`;
+        
+        // Create sprite
+        this[tunnelSegment] = this.physics.add.sprite(600, 400, 'tunnel').setScale(scale);
+    
+        // Set collide world bounds
+        // this[tunnelSegment].body.setCollideWorldBounds(true);
+    
+        // Create animation with a unique key for each sprite
+        this.anims.create({
+            key: `tunnel`,
+            frames: this.anims.generateFrameNumbers('tunnel'),
+            frameRate: 9,
+            repeat: -1 // Repeat indefinitely
+        });
+    
+        // Play animation
+        this[tunnelSegment].play(`tunnel`);
+    
+        // Add sprite to group or container
+        this.tunnel.add(this[tunnelSegment]);
+
+    }
+        this.tweens.add({
+            targets: this.tunnel.anims,
+            timeScale: { from: 0, to: 2 },
+            ease: 'Sine.inOut',
+            repeat: -1,
+        });
+
+        this.tweens.add({
+            targets: [ this.tunnelSegment0, this.tunnelSegment1, this.tunnelSegment2, this.tunnelSegment3,
+                this.tunnelSegment4, this.tunnelSegment5, this.tunnelSegment6, this.tunnelSegment8, this.tunnelSegment9],
+            x: this.tunnelX,
+            y: this.tunnelY,
+            duration: 2000,
+            ease: 'Sine.easeInOut',
+            delay: this.tweens.stagger(100)
+        });
+
         //drawing the cockpit
         this.cockpit = this.add.image(600,500,`cockpit`);
         this.lever = this.physics.add.sprite(1018,850,`lever`).setInteractive().setCollideWorldBounds(true); // lever
         this.stop = this.physics.add.sprite(97,823,`stop`).setScale(1).setInteractive(); // pressable button
         this.directionScreen = this.add.sprite(600,500,`direction`);
         this.pointer = this.add.sprite(600,500,`pointer`);
-
-        // lever position: 0 - 1018,850
-        // lever position: max high - 1018,850
-        // lever position: max high - 1018,750
-        // lever position: max low - 1018,950
 
         // handle all graphics for the map path
         this.graphics = this.add.graphics();
@@ -56,7 +104,7 @@ class Play extends Phaser.Scene {
 
         this.curve = new Phaser.Curves.Spline(this.points);
 
-        this.tween =  this.tweens.add({
+        this.map =  this.tweens.add({
             targets: this.path,
             t: 1,
             ease: 'Sine.easeInOut',
@@ -103,6 +151,7 @@ class Play extends Phaser.Scene {
         this.stop.on('pointerdown', (pointer) => {
             this.stop.setScale(0.9);
             this.lever.y = 850;
+            this.emergency = true;
         });
 
         // Scale back to normal when pointer is released
@@ -110,11 +159,13 @@ class Play extends Phaser.Scene {
             this.stop.setScale(1)
         });
 
-        this.speedometer = this.add.text(200, 898, this.speed.toFixed(), { fontFamily: 'Calibri', fontSize: 35, color: '#00ff00' });
+        this.speedometer = this.add.text(200, 898, this.speed.toFixed(), { fontFamily: 'Calibri', fontSize: 35, color: '#00ff00', align: 'right' });
         this.speedometer2 = this.add.text(265, 895, 'km/h', { fontFamily: 'Calibri', fontSize: 20, color: '#00ff00' });
         this.speedometer.rotation = -0.2;
         this.speedometer2.rotation = -0.2;
     
+
+        this.cursors = this.input.keyboard.createCursorKeys();
    
 }
 update () {
@@ -123,7 +174,7 @@ update () {
 
     // Invisible line and points
     this.graphics.lineStyle(1, 0xffffff, 0);
-    this.graphics.fillStyle(0x00ff00, 0);
+    this.graphics.fillStyle(0x00ff00, 1);
 
     // from the example,
     this.curve.draw(this.graphics, 64);
@@ -140,78 +191,212 @@ update () {
 
     // calculates the precentage on the path
     const percentage = this.path.t * 100;
-    // console.log("Percentage:", percentage.toFixed(1), "%");
+    console.log("Percentage:", percentage.toFixed(1), "%");
     
     // // setting the forward or backward sprites and sets the animation direction
     if (this.lever.y > 865) {
         this.directionScreen.setFrame(2);
         this.direction = false;
-        this.tween.timeScale = -1;
-        this.tween.play();
+        this.map.timeScale = -1;
+        this.map.play();
+        this.tunnel.children.iterate(function(child) {
+            child.anims.inReverse = true;
+        });
         if (this.path.t*100 < 0.1) {
-            this.tween.play();
+            this.map.play();
         }
     }
     else if (this.lever.y < 835) {
         this.directionScreen.setFrame(1);
         this.direction = true;
-        this.tween.timeScale = 1;
-        this.tween.play();
+        this.map.timeScale = 1;
+        this.map.play();
+        this.tunnel.children.iterate(function(child) {
+            child.anims.inReverse = false;
+        });
     }
     else {
         this.directionScreen.setFrame(0);
-        this.tween.timeScale = 0;
+    }   
+    
+    // calculates the normalized value of the lever between 0 and 1 to scale the gauge
+    const normalizedValue = (this.lever.y - 850) / (950 - 850);
+    const scaledGauge = Phaser.Math.Clamp(normalizedValue, -1, 1);
+    
+    //multiplies by the nmumber of frames
+    this.gauge = scaledGauge*23;
+    
+    // convertes negative into positive
+    if (this.gauge < 0) {
+        this.gauge *= -1;
     }
     
-    if (this.animation >= 3) {
-        this.animation = 3;
+    const speed = Phaser.Math.Clamp(this.gauge, 0, 23);
+    
+    this.maxSpeed = speed*7;
+    this.pointer.setFrame(this.gauge.toFixed());
+    
+    this.speedFactor = this.gauge*0.01;
+    
+    if (this.maxSpeed > 0 && this.speed < this.maxSpeed) {
+        this.speed += this.speedFactor;
     }
-    else if (this.animation <= -3) {
-        this.animation = -3;
-    }
-   
-
-// calculates the normalized value of the lever between 0 and 1 to scale the gauge
-const normalizedValue = (this.lever.y - 850) / (950 - 850);
-const scaledGauge = Phaser.Math.Clamp(normalizedValue, -1, 1);
-
-//multiplies by the nmumber of frames
-this.gauge = scaledGauge*23;
-
-// convertes negative into positive
-if (this.gauge < 0) {
-    this.gauge *= -1;
-}
-
-const speed = Phaser.Math.Clamp(this.gauge, 0, 23);
-
-this.maxSpeed = speed*7;
-this.pointer.setFrame(this.gauge.toFixed());
-
-this.speedFactor = this.gauge*0.01;
-
-if (this.maxSpeed > 0 && this.speed < this.maxSpeed) {
-    this.speed += this.speedFactor;
-}
-else if (this.maxSpeed >= 0 && this.speed > this.maxSpeed) {
-    if (this.speedFactor > 0) {
-        this.speed -= this.speedFactor;  
-    } 
-    else {
-        this.speed -= 0.1;  
-    } 
-}
-
-if (this.speed < 0) {
-    this.speed = 0;
-}
-
-this.speedometer.setText(this.speed.toFixed());
-
-
-
-console.log(this.gauge,this.maxSpeed,this.speed.toFixed());
+    else if (this.maxSpeed >= 0 && this.speed > this.maxSpeed) {
+        if (this.speedFactor > 0) {
+            this.speed -= this.speedFactor;  
         }
-}
+        else {
+            if (this.emergency) {
+                this.speedFactor = 1;
+            }
+            else {
+                this.speedFactor = 0.3;  
+            }
+            this.speed -= this.speedFactor;  
+        } 
+    }
+    
+    if (this.speed < 0) {
+        this.speed = 0;
+        this.emergency = false;
+        this.map.timeScale = 0;
+    }
+    
+    this.speedometer.setText(this.speed.toFixed());
+    
+    const minMapSpeed = 50000;
+    const maxMapSpeed = 100000;
+    
+    const normalizedSpeed = Phaser.Math.Clamp((this.speed - 0) / (161 - 0), 0, 1);
+    
+    // Map the normalized speed to mapSpeed
+    this.mapSpeed = Phaser.Math.Linear(maxMapSpeed, minMapSpeed, normalizedSpeed);
+    
+    const normalizedAnimation = Phaser.Math.Clamp(normalizedSpeed, 0, 3);
+    
+    this.animation = normalizedAnimation;
+    
+    if (this.animation < 0) {
+        this.tunnel.children.iterate(function(child) {
+            child.anims.reverse();
+        });
+    }
+    
+    
+    // else {
+        //     this.tunnel.children.iterate(function(child) {
+            //         child.anims.play();
+            //         });
+            // }
+            
+            if (this.animation >= 3) {
+                this.animation = 3;
+            }
+            
+            let test = this.animation;
+            
+            this.tunnel.children.iterate(function(child) {
+                child.anims.timeScale = normalizedAnimation;
+            });
+            
+            // determining where the tunnel curves
+            if (percentage >= 5) {
+                this.tunnelX = 850;
+                this.tunnelY = 400;
+            }
+            else if (percentage >= 10) {
+                this.tunnelX = 600;
+                this.tunnelY = 400;
+            }
+            else if (percentage >= 15) {
+                this.tunnelX = 450;
+                this.tunnelY = 400;
+            }
+            else if (percentage >= 20) {
+                this.tunnelX = 600;
+                this.tunnelY = 300;
+            }
+            else if (percentage >= 25) {
+                this.tunnelX = 600;
+                this.tunnelY = 200;
+            }
+            else if (percentage >= 30) {
+                this.tunnelX = 500;
+                this.tunnelY = 200;
+            }
+            else if (percentage >= 35) {
+                this.tunnelX = 600;
+                this.tunnelY = 400;
+            }
+            else if (percentage >= 40) {
+                this.tunnelX = 600;
+                this.tunnelY = 500;
+            }
+            else if (percentage >= 45) {
+                this.tunnelX = 400;
+                this.tunnelY = 400;
+            }
+            else if (percentage >= 50) {
+                this.tunnelX = 600;
+                this.tunnelY = 400;
+            }
+            else if (percentage >= 55) {
+                this.tunnelX = 800;
+                this.tunnelY = 400;
+            }
+            else if (percentage >= 60) {
+                this.tunnelX = 600;
+                this.tunnelY = 200;
+            }
+            else if (percentage >= 65) {
+                this.tunnelX = 600;
+                this.tunnelY = 400;
+            }
+            else if (percentage >= 70) {
+                this.tunnelX = 450;
+                this.tunnelY = 300;
+            }
+            else if (percentage >= 75) {
+                this.tunnelX = 600;
+                this.tunnelY = 400;
+            }
+            else if (percentage >= 80) {
+                this.tunnelX = 200;
+                this.tunnelY = 600;
+            }
+            else if (percentage >= 85) {
+                this.tunnelX = 600;
+                this.tunnelY = 700;
+            }
+            else if (percentage >= 90) {
+                this.tunnelX = 50;
+                this.tunnelY = 200;
+            }
+            else if (percentage >= 95) {
+                this.tunnelX = 500;
+                this.tunnelY = 350;
+            }
+            else if (percentage >= 98) {
+                this.tunnelX = 600;
+                this.tunnelY = 400;
+            }
+            
+            if (this.cursors.right.isDown) {
+                this.tunnelX++;
+            }
+            else if (this.cursors.left.isDown) {
+                this.tunnelX--;
+            }
+            if (this.cursors.up.isDown) {
+                this.tunnelY--;
+            }
+            else if (this.cursors.down.isDown) {
+                this.tunnelY++;
+            }
+            // console.log(this.tunnelY);
+            
+        }
         
-        
+    }
+    
+    

@@ -4,104 +4,80 @@ class Play extends Phaser.Scene {
             key: `play`
         });
         this.animation = 0;
-    }
+    }    
 
-    
-    // Function to create game objects
-    create ()
-    {  
+    create () {
+    //drawing the cockpit
+    this.cockpit = this.add.image(600,500,`cockpit`);
+    this.lever = this.physics.add.sprite(1018,850,`lever`); // lever
+    this.stop = this.physics.add.sprite(97,823,`stop`); // pressable button
+    this.pointer = this.add.sprite(600,500,`pointer`);
 
-    this.tunnel = this.physics.add.group({
-        // collideWorldBounds: true
-    });
-        
+    this.graphics = this.add.graphics();
+
+        this.path = { t: 0, vec: new Phaser.Math.Vector2()};
+
+        this.points = [];
+
+        this.points.push(new Phaser.Math.Vector2(775, 802));
+        this.points.push(new Phaser.Math.Vector2(665, 800));
+        this.points.push(new Phaser.Math.Vector2(627, 780));
+        this.points.push(new Phaser.Math.Vector2(615, 730));
+        this.points.push(new Phaser.Math.Vector2(580, 710));
+        this.points.push(new Phaser.Math.Vector2(540, 710));
+        this.points.push(new Phaser.Math.Vector2(500, 710));
+        this.points.push(new Phaser.Math.Vector2(475, 730));
+        this.points.push(new Phaser.Math.Vector2(449, 765));
+        this.points.push(new Phaser.Math.Vector2(423, 800));
+        this.points.push(new Phaser.Math.Vector2(420, 830));
+        this.points.push(new Phaser.Math.Vector2(445, 840));
+        this.points.push(new Phaser.Math.Vector2(505, 837));
+        this.points.push(new Phaser.Math.Vector2(545, 852));
+        this.points.push(new Phaser.Math.Vector2(575, 880));
+        this.points.push(new Phaser.Math.Vector2(610, 910));
+        this.points.push(new Phaser.Math.Vector2(650, 910));
+        this.points.push(new Phaser.Math.Vector2(717, 870));
+        this.points.push(new Phaser.Math.Vector2(785, 830));
+        this.points.push(new Phaser.Math.Vector2(795, 806));
+        this.points.push(new Phaser.Math.Vector2(775, 802));
+
+        this.curve = new Phaser.Curves.Spline(this.points);
+
+        this.tweens.add({
+            targets: this.path,
+            t: 1,
+            ease: 'Sine.easeInOut',
+            duration: 10000,
+            repeat: -1
+        });
 
    
-    
-    let scale = 1.433;
-    for (let i = 0; i < 15; i++) {
-        scale *= 0.75;
-        this.tunnelSegment = this.physics.add.sprite(512,384,`tunnel`).setScale(scale);
-        this.anims.create({
-            key: 'tunnel',
-            frames: this.anims.generateFrameNumbers(`tunnel`),
-            frameRate: 9,
-            repeat: -1 // Repeat indefinitely
-        });
-        this.tunnel.add(this.tunnelSegment);
-        this.tunnelSegment.play('tunnel');
-        
-    }
-    this.tweens.add({
-        targets: this.tunnel.anims,
-        timeScale: { from: 0, to: 2 },
-        ease: 'Sine.inOut',
-        yoyo: true,
-        repeat: 0,
-        // repeatDelay: 1000,
-        // hold: 5000,
-        // duraton: 5000
-    });
-
-    
-    this.cursors = this.input.keyboard.createCursorKeys();
 }
 update () {
-    if (this.cursors.up.isDown) {
-        // Increase frame rate gradually
-        
-        this.animation += 0.01;
-        
-        // Set new frame rate for the animation
-        // this.tunnel.anims.setTimeScale(this.frameRate);
-    }
-    else if (this.cursors.down.isDown) {
-        
-        this.animation -= 0.01;
-        
-        // Set new frame rate for the animation
-        // this.tunnel.anims.setTimeScale(this.frameRate);
-    }
-    // if (this.cursors.right.isDown) {
-        //     this.tunnel.setVelocityX(100);
-        // }
-        // else if (this.cursors.left.isDown) {
-            //     this.tunnel.setVelocityX(-100);
-            // }
-            // else {
-                //     this.tunnel.setVelocityX(0);
-                // }
-                console.log(this.animation);
-                
-                if (this.animation < 0) {
-                    this.tunnel.children.iterate(function(child) {
-                        child.anims.reverse();
-                        });
-                }
+    // erases the train path
+    this.graphics.clear();
 
-                
-                // else {
-                //     this.tunnel.children.iterate(function(child) {
-                //         child.anims.play();
-                //         });
-                // }
-                
-                if (this.animation >= 3) {
-                    this.animation = 3;
-                }
-                else if (this.animation <= -3) {
-                    this.animation = -3;
-                }
-                let test = this.animation;
-                
-                this.tunnel.children.iterate(function(child) {
-                    if (test >= 0) {
-                        child.anims.timeScale = test;
-                    }
-                    else {
-                        child.anims.timeScale = -test;
-                    }
-                    });
+    // Invisible line and points
+    this.graphics.lineStyle(1, 0xffffff, 0);
+    this.graphics.fillStyle(0x00ff00, 1);
+
+    // from the example,
+    this.curve.draw(this.graphics, 64);
+
+    // 
+    for (let i = 0; i < this.points.length; i++)
+    {
+        this.graphics.fillCircle(this.points[i].x, this.points[i].y, 4);
+    }
+
+    // draws the point
+    this.curve.getPoint(this.path.t, this.path.vec);
+
+    this.graphics.fillStyle(0xff0000, 1);
+    this.graphics.fillCircle(this.path.vec.x, this.path.vec.y, 8);
+
+        
+
             }
         }
         

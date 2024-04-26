@@ -54,16 +54,6 @@ class Play extends Phaser.Scene {
             repeat: -1,
         });
 
-        this.targetDirection = this.tweens.add({
-            targets: [ this.tunnelSegment0, this.tunnelSegment1, this.tunnelSegment2, this.tunnelSegment3,
-                this.tunnelSegment4, this.tunnelSegment5, this.tunnelSegment6, this.tunnelSegment8, this.tunnelSegment9],
-            x: 600,
-            y: this.tunnelY,
-            duration: 2000,
-            ease: 'Sine.easeInOut',
-            delay: this.tweens.stagger(100)
-        });
-
         //drawing the cockpit
         this.cockpit = this.add.image(600,500,`cockpit`);
         this.lever = this.physics.add.sprite(1018,850,`lever`).setInteractive().setCollideWorldBounds(true); // lever
@@ -167,13 +157,26 @@ class Play extends Phaser.Scene {
 
    
 }
+
+createTunnelTween(x, y, duration) {
+    this.tweens.add({
+        targets: [ this.tunnelSegment0, this.tunnelSegment1, this.tunnelSegment2, this.tunnelSegment3,
+            this.tunnelSegment4, this.tunnelSegment5, this.tunnelSegment6, this.tunnelSegment8, this.tunnelSegment9],
+        x: x,
+        y: y,
+        duration: duration,
+        ease: 'Sine.easeInOut',
+        delay: this.tweens.stagger(100)
+    });
+}
+
 update () {
     // erases the train path
     this.graphics.clear();
 
     // Invisible line and points
     this.graphics.lineStyle(1, 0xffffff, 0);
-    this.graphics.fillStyle(0x00ff00, 1);
+    this.graphics.fillStyle(0x00ff00, 0);
 
     // from the example,
     this.curve.draw(this.graphics, 64);
@@ -280,14 +283,7 @@ update () {
             child.anims.reverse();
         });
     }
-    
-    
-    // else {
-        //     this.tunnel.children.iterate(function(child) {
-            //         child.anims.play();
-            //         });
-            // }
-            
+                
             if (this.animation >= 3) {
                 this.animation = 3;
             }
@@ -300,91 +296,104 @@ update () {
             
             // determining where the tunnel curves
             if (this.percentage > 5 && this.percentage < 6) {
-                this.tweens.add({
-                    targets: [ this.tunnelSegment0, this.tunnelSegment1, this.tunnelSegment2, this.tunnelSegment3,
-                        this.tunnelSegment4, this.tunnelSegment5, this.tunnelSegment6, this.tunnelSegment8, this.tunnelSegment9],
-                    x: 100,
-                    y: 100,
-                    duration: 2000,
-                    ease: 'Sine.easeInOut',
-                    delay: this.tweens.stagger(100)
-                });
+                this.tunnelX = 950;
+                this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 3000);
             }
-            else if (this.percentage*100 >= 10) {
+            else if (this.percentage > 10 && this.percentage < 11) {
                 this.tunnelX = 600;
                 this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 2000);
             }
-            else if (this.percentage >= 15) {
+            else if (this.percentage > 15 && this.percentage < 16) {
                 this.tunnelX = 450;
                 this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 3000);
             }
-            else if (this.percentage >= 20) {
+            else if (this.percentage > 20 && this.percentage < 21) {
                 this.tunnelX = 600;
                 this.tunnelY = 300;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 2000);
             }
-            else if (this.percentage >= 25) {
+            else if (this.percentage > 25 && this.percentage < 26) {
                 this.tunnelX = 600;
                 this.tunnelY = 200;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 3000);
             }
-            else if (this.percentage >= 30) {
+            else if (this.percentage > 30 && this.percentage < 31) {
                 this.tunnelX = 500;
                 this.tunnelY = 200;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 3000);
             }
-            else if (this.percentage >= 35) {
+            else if (this.percentage > 35 && this.percentage < 36) {
                 this.tunnelX = 600;
                 this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 1000);
             }
-            else if (this.percentage >= 40) {
+            else if (this.percentage > 40 && this.percentage < 41) {
                 this.tunnelX = 600;
-                this.tunnelY = 500;
+                this.tunnelY = 450;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 3000);
             }
-            else if (this.percentage >= 45) {
+            else if (this.percentage > 45 && this.percentage < 46) {
                 this.tunnelX = 400;
                 this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 2000);
             }
-            else if (this.percentage >= 50) {
+            else if (this.percentage > 50 && this.percentage < 51) {
                 this.tunnelX = 600;
                 this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 1000);
             }
-            else if (this.percentage >= 55) {
+            else if (this.percentage > 55 && this.percentage < 56) {
                 this.tunnelX = 800;
                 this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 2000);
             }
-            else if (this.percentage >= 60) {
+            else if (this.percentage > 60 && this.percentage < 61) {
                 this.tunnelX = 600;
-                this.tunnelY = 200;
+                this.tunnelY = 300;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 3000);
             }
-            else if (this.percentage >= 65) {
+            else if (this.percentage > 65 && this.percentage < 66) {
                 this.tunnelX = 600;
                 this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 2000);
             }
-            else if (this.percentage >= 70) {
+            else if (this.percentage > 70 && this.percentage < 71) {
                 this.tunnelX = 450;
                 this.tunnelY = 300;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 2000);
             }
-            else if (this.percentage >= 75) {
+            else if (this.percentage > 75 && this.percentage < 76) {
                 this.tunnelX = 600;
                 this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 1000);
             }
-            else if (this.percentage >= 80) {
+            else if (this.percentage > 80 && this.percentage < 81) {
                 this.tunnelX = 200;
                 this.tunnelY = 600;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 1000);
             }
-            else if (this.percentage >= 85) {
+            else if (this.percentage > 85 && this.percentage < 86) {
                 this.tunnelX = 600;
                 this.tunnelY = 700;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 1000);
             }
-            else if (this.percentage >= 90) {
+            else if (this.percentage > 90 && this.percentage < 91) {
                 this.tunnelX = 50;
                 this.tunnelY = 200;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 1000);
             }
-            else if (this.percentage >= 95) {
+            else if (this.percentage > 95 && this.percentage < 96) {
                 this.tunnelX = 500;
                 this.tunnelY = 350;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 1000);
             }
             else if (this.percentage >= 98) {
                 this.tunnelX = 600;
                 this.tunnelY = 400;
+                this.createTunnelTween(this.tunnelX, this.tunnelY, 3000);
             }
 
 

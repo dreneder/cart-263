@@ -15,9 +15,6 @@ class Play extends Phaser.Scene {
         collideWorldBounds: true
     });
         
-
-   
-    
     let scale = 0.033;
 
     for (let i = 0; i < 13; i++) {
@@ -52,9 +49,6 @@ class Play extends Phaser.Scene {
         ease: 'Sine.inOut',
         yoyo: true,
         repeat: 0,
-        // repeatDelay: 1000,
-        // hold: 5000,
-        // duraton: 5000
     });
 
     

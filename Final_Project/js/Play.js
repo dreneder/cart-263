@@ -16,11 +16,14 @@ class Play extends Phaser.Scene {
     }    
     
     create () {
+        
+        //adding a background
+        this.add.image(600,400,`background`);
+
         this.tunnel = this.physics.add.group({
             collideWorldBounds: true
         });
-            
-        let scale = 0.013;
+        let scale = 0.011;
     
         for (let i = 0; i < 7; i++) {
         scale *= 1.9;
@@ -35,9 +38,9 @@ class Play extends Phaser.Scene {
         // Create animation with a unique key for each sprite
         this.anims.create({
             key: `tunnel`,
-            frames: this.anims.generateFrameNumbers('tunnel'),
-            frameRate: 9,
-            repeat: -1 // Repeat indefinitely
+            frames: this.anims.generateFrameNumbers('tunnel',{ start: 0, end: 59 }),
+            frameRate: 60,
+            repeat: -1, // Repeat indefinitely
         });
     
         // Play animation
@@ -234,7 +237,7 @@ update () {
     }
     
     const speed = Phaser.Math.Clamp(this.gauge, 0, 23);
-    
+    // converts the gauge to speed
     this.maxSpeed = speed*7;
     this.pointer.setFrame(this.gauge.toFixed());
     
@@ -263,7 +266,7 @@ update () {
         this.emergency = false;
         this.map.timeScale = 0;
     }
-    
+    // updates the speedometer
     this.speedometer.setText(this.speed.toFixed());
     
     const minMapSpeed = 50000;
